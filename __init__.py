@@ -4,7 +4,7 @@ except ImportError:
     print("Warning: bpy module not found. This script must be run inside Blender.")
     
 bl_info = {
-    "name": "CTRLsAndShapes",
+    "name": "GothaLinker",
     "description": "Animar y mejorar animaciones desed shape keys",
     "author": "Gonzalo Castro (Gotharo)",
     "version": (2, 1),

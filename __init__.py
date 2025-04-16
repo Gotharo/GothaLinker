@@ -2,12 +2,16 @@ bl_info = {
     "name": "CTRLsAndShapes",
     "description": "Animar y mejorar animaciones desed shape keys",
     "author": "Gonzalo Castro (Gotharo)",
-    "version": (2, 0),
+    "version": (2, 1),
     "blender": (4, 2, 7),
     "category": "Object",
 }
 
-import bpy
+
+try:
+    import bpy
+except ImportError:
+    print("Warning: bpy module not found. This script must be run inside Blender.")
 
 # Lista de shape keys, controladores y direcciones
 control_pairs = {
@@ -70,6 +74,62 @@ control_pairs = {
     "tongueOut": ("CTRL_C_tongue_inOut", ("Y", 1)),  # Y Positivo
 
 }
+
+# Listas de objetos
+objetos_brows = [
+    "CTRL_L_brow_raiseIn",
+    "CTRL_L_brow_raiseOut",
+    "CTRL_R_brow_raiseOut",
+    "CTRL_L_brow_down",
+    "CTRL_R_brow_down",
+    "CTRL_L_brow_lateral",
+    "CTRL_R_brow_lateral"
+]
+
+objetos_mid_Head = [
+    "CTRL_C_eye",
+    "CTRL_L_eye",
+    "CTRL_R_eye",
+    "CTRL_L_eye_squintInner",
+    "CTRL_R_eye_squintInner",
+    "CTRL_L_eye_cheekRaise",
+    "CTRL_R_eye_cheekRaise",
+    "CTRL_L_eye_blink",
+    "CTRL_R_eye_blink",
+    "CTRL_C_eye_parallelLook",
+    "CTRL_L_ear_up",
+    "CTRL_L_nose",
+    "CTRL_R_nose",
+    "CTRL_L_nose_wrinkleUpper",
+    "CTRL_R_nose_wrinkleUpper"
+]
+
+objetos_mouth_jaw = [
+    
+    "CTRL_C_mouth",
+    "CTRL_L_mouth_sharpCornerPull",
+    "CTRL_R_mouth_sharpCornerPull",
+    "CTRL_L_mouth_cornerPull",
+    "CTRL_R_mouth_cornerPull",
+    "CTRL_L_mouth_dimple",
+    "CTRL_R_mouth_dimple",
+    "CTRL_L_mouth_cornerDepress",
+    "CTRL_R_mouth_cornerDepress",
+    "CTRL_L_mouth_stretch",
+    "CTRL_R_mouth_stretch",
+    "CTRL_L_mouth_suckBlow",
+    "CTRL_R_mouth_suckBlow",
+    "CTRL_R_mouth_purseD",
+    "CTRL_L_mouth_towardsU",
+    "CTRL_R_mouth_towardsU",
+    "CTRL_L_mouth_towardsD",
+    "CTRL_R_mouth_towardsD",
+    "CTRL_R_mouth_funnelD",
+    "CTRL_R_mouth_pressD",
+    "CTRL_C_tongue_inOut",
+    "CTRL_C_jaw",
+    "CTRL_C_jaw_fwdBack"
+]
 
 def Linker():
     print("Ejecutando Linker")
@@ -252,8 +312,7 @@ def Bake_Shapestoctrls():
                                     ctrl_fcurve.keyframe_points.insert(frame, new_value)
                             print(f"Animación copiada de Shape Key '{shape_key_name}' a '{controller_name}' en el eje {axis} ({'Negativo' if direction == -1 else 'Positivo'})")
                 print("Todas las animaciones han sido copiadas correctamente a los controladores.")
-
-                
+               
 def Keyshapes():
     print("Ejecutando Keyshapes")
     selected_obj = bpy.context.object
@@ -266,6 +325,15 @@ def Keyshapes():
         print("Keyframed all shape keys.")
     else:
         print("No shape keys found on the active object.")
+
+# Función para seleccionar objetos
+def seleccionar_objetos(lista_objetos):
+    bpy.ops.object.select_all(action='DESELECT')  # Deseleccionar todos los objetos
+    for obj in bpy.data.objects:
+        if obj.name in lista_objetos:
+            obj.select_set(True)  # Seleccionar el objeto
+            bpy.context.view_layer.objects.active = obj  # Asegurar que se mantenga activo
+
 
 
 class MIADDON_OT_Linker(bpy.types.Operator):
@@ -342,13 +410,46 @@ class OBJECT_OT_select_riggui(bpy.types.Operator):
 
         self.report({'INFO'}, f"Todos los objetos en la colección '{collection_name}' han sido seleccionados.")
         return {'FINISHED'}    
-   
+
+# Operador para el botón "Sel Brows"
+class SeleccionarObjetosBrowsOperator(bpy.types.Operator):
+    bl_idname = "object.seleccionar_objetos_brows"
+    bl_label = "Sel Brows"
+    bl_description = "Selecciona los objetos relacionados con las cejas en el viewport"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        seleccionar_objetos(objetos_brows)  # Pasar la lista correspondiente
+        return {'FINISHED'}
+
+# Operador para el botón "Sel E-N-E"
+class SeleccionarObjetosMidHeadOperator(bpy.types.Operator):
+    bl_idname = "object.seleccionar_objetos_mid_head"
+    bl_label = "Sel E-N-E"
+    bl_description = "Selecciona los objetos relacionados con ojos, nariz y orejas"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        seleccionar_objetos(objetos_mid_Head)  # Pasar la lista correspondiente
+        return {'FINISHED'}
+
+# Operador para el botón "Sel Mouth-Jaw"
+class SeleccionarObjetosMouthJawOperator(bpy.types.Operator):
+    bl_idname = "object.seleccionar_objetos_mouth_jaw"
+    bl_label = "Sel Mouth-Jaw"
+    bl_description = "Selecciona los objetos relacionados con la boca y la mandíbula"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        seleccionar_objetos(objetos_mouth_jaw)  # Pasar la lista correspondiente
+        return {'FINISHED'}
+
 class MIADDON_PT_Panel(bpy.types.Panel):
     bl_label = "CTRLsAndShapes Panel"
     bl_idname = "MIADDON_PT_Panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = 'CTRLsAndShapes'
+    bl_category = 'GothaLinkerV2'
 
     def draw(self, context):
         layout = self.layout
@@ -375,6 +476,15 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.operator("object.select_riggui", text="Select RIGGUI")
 
+        row = layout.row()
+        row.operator("object.seleccionar_objetos_brows", text="Sel Brows")
+
+        row = layout.row()
+        row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")
+
+        row = layout.row()
+        row.operator("object.seleccionar_objetos_mouth_jaw", text="Sel Mouth-Jaw")
+
 # Registrar y desregistrar las clases
 def register():
     bpy.utils.register_class(MIADDON_PT_Panel)
@@ -385,6 +495,9 @@ def register():
     bpy.utils.register_class(MIADDON_OT_Bake_Shapestoctrls)
     bpy.utils.register_class(MIADDON_OT_Keyshapes)
     bpy.utils.register_class(OBJECT_OT_select_riggui)  # Nueva clase
+    bpy.utils.register_class(SeleccionarObjetosBrowsOperator)
+    bpy.utils.register_class(SeleccionarObjetosMidHeadOperator)
+    bpy.utils.register_class(SeleccionarObjetosMouthJawOperator)
     
 def unregister():
     bpy.utils.unregister_class(MIADDON_OT_Linker)
@@ -394,6 +507,9 @@ def unregister():
     bpy.utils.unregister_class(MIADDON_OT_Bake_Shapestoctrls)
     bpy.utils.unregister_class(MIADDON_OT_Keyshapes)
     bpy.utils.unregister_class(OBJECT_OT_select_riggui)  # Nueva clase
+    bpy.utils.unregister_class(SeleccionarObjetosBrowsOperator)
+    bpy.utils.unregister_class(SeleccionarObjetosMidHeadOperator)
+    bpy.utils.unregister_class(SeleccionarObjetosMouthJawOperator)
     
 if __name__ == "__main__":
     register()

@@ -530,8 +530,8 @@ class MIADDON_PT_Panel(bpy.types.Panel):
 
         # Botones para los fonemas
         row = layout.row()
-        row.operator("object.apply_phoneme_fv", text="Aplicar FV")
-        row.operator("object.apply_phoneme_ae", text="Aplicar AE")
+        row.operator("object.apply_phoneme_fv", text="FV")
+        row.operator("object.apply_phoneme_ae", text="AE")
 
         
 

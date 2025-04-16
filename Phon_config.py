@@ -4,7 +4,11 @@ phoneme_configs = {
         "CTRL_R_mouth_towardsD": (0.0, 0.7939)
     },
     "AE": {
-        "CTRL_C_jaw": (-7.10, 0.3150)
+        "CTRL_L_mouth_suckBlow": (0.0000, 0.2026),
+        "CTRL_R_mouth_suckBlow": (0.0000, 0.2026),
+        "CTRL_L_mouth_towardsU": (0.0000, 0.1604),
+        "CTRL_R_mouth_pressD": (0.0000, 0.0357),
+        "CTRL_C_jaw": (0.0000, 0.3210)
     },
     "AH": {
         "CTRL_R_mouth_pressD": (-7.4505, 0.0865),

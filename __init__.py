@@ -379,6 +379,115 @@ class ApplyPhonemeAEOperator(bpy.types.Operator):
         apply_phoneme_config("AE")
         return {'FINISHED'}
 
+class ApplyPhonemeAHOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_ah"
+    bl_label = "Aplicar AH"
+    bl_description = "Aplica la configuración del fonema AH"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("AH")
+        return {'FINISHED'}
+
+class ApplyPhonemeBMPOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_bmp"
+    bl_label = "Aplicar BMP"
+    bl_description = "Aplica la configuración del fonema BMP"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("BMP")
+        return {'FINISHED'}
+
+class ApplyPhonemeChJOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_chj"
+    bl_label = "Aplicar ChJ"
+    bl_description = "Aplica la configuración del fonema ChJ"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("ChJ")
+        return {'FINISHED'}
+    
+class ApplyPhonemeEESZTLDNOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_EESZTLDN"
+    bl_label = "Aplicar EESZTLDN"
+    bl_description = "Aplica la configuración del fonema EESZTLDN"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("EESZTLDN")
+        return {'FINISHED'}
+    
+class ApplyPhonemeErOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_Er"
+    bl_label = "Aplicar Er"
+    bl_description = "Aplica la configuración del fonema Er"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("Er")
+        return {'FINISHED'}
+
+class ApplyPhonemeIhOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_Ih"
+    bl_label = "Aplicar Ih"
+    bl_description = "Aplica la configuración del fonema Ih"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("Ih")
+        return {'FINISHED'}
+
+class ApplyPhonemeKGHNGOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_KGHNG"
+    bl_label = "Aplicar KGHNG"
+    bl_description = "Aplica la configuración del fonema KGHNG"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("KGHNG")
+        return {'FINISHED'}
+
+class ApplyPhonemeOhOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_Oh"
+    bl_label = "Aplicar Oh"
+    bl_description = "Aplica la configuración del fonema Oh"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("Oh")
+        return {'FINISHED'}
+
+class ApplyPhonemeROperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_R"
+    bl_label = "Aplicar R"
+    bl_description = "Aplica la configuración del fonema R"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("R")
+        return {'FINISHED'}
+
+class ApplyPhonemeThOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_Th"
+    bl_label = "Aplicar Th"
+    bl_description = "Aplica la configuración del fonema Th"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("Th")
+        return {'FINISHED'}
+    
+class ApplyPhonemeWOOOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_WOO"
+    bl_label = "Aplicar WOO"
+    bl_description = "Aplica la configuración del fonema WOO"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("WOO")
+        return {'FINISHED'}
 
 class MIADDON_OT_Linker(bpy.types.Operator):
     bl_idname = "miaddon.linker"
@@ -532,9 +641,24 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.operator("object.apply_phoneme_fv", text="FV")
         row.operator("object.apply_phoneme_ae", text="AE")
+        row.operator("object.apply_phoneme_fv", text="AH")
+        row.operator("object.apply_phoneme_ae", text="BMP")
 
+        row = layout.row()
+        row.operator("object.apply_phoneme_fv", text="ChJ")
+        row.operator("object.apply_phoneme_ae", text="EESZTLDN")
+        row.operator("object.apply_phoneme_fv", text="Er")
+        row.operator("object.apply_phoneme_ae", text="Ih")
         
+        row = layout.row()
+        row.operator("object.apply_phoneme_fv", text="KGHNG")
+        row.operator("object.apply_phoneme_ae", text="Oh")
+        row.operator("object.apply_phoneme_fv", text="R")
+        row.operator("object.apply_phoneme_ae", text="Th")
 
+        row = layout.row()
+        row.operator("object.apply_phoneme_fv", text="WOO")
+        
 
 
 def register():
@@ -551,6 +675,17 @@ def register():
     bpy.utils.register_class(SeleccionarObjetosMouthJawOperator)
     bpy.utils.register_class(ApplyPhonemeFVOperator)
     bpy.utils.register_class(ApplyPhonemeAEOperator)
+    bpy.utils.register_class(ApplyPhonemeAHOperator)
+    bpy.utils.register_class(ApplyPhonemeBMPOperator)
+    bpy.utils.register_class(ApplyPhonemeChJOperator)
+    bpy.utils.register_class(ApplyPhonemeEESZTLDNOperator)
+    bpy.utils.register_class(ApplyPhonemeErOperator)
+    bpy.utils.register_class(ApplyPhonemeIhOperator)
+    bpy.utils.register_class(ApplyPhonemeKGHNGOperator)
+    bpy.utils.register_class(ApplyPhonemeOhOperator)
+    bpy.utils.register_class(ApplyPhonemeROperator)
+    bpy.utils.register_class(ApplyPhonemeThOperator)
+    bpy.utils.register_class(ApplyPhonemeWOOOperator)
     
     
 def unregister():
@@ -564,8 +699,19 @@ def unregister():
     bpy.utils.unregister_class(SeleccionarObjetosBrowsOperator)
     bpy.utils.unregister_class(SeleccionarObjetosMidHeadOperator)
     bpy.utils.unregister_class(SeleccionarObjetosMouthJawOperator)
-    bpy.utils.register_class(ApplyPhonemeFVOperator)
-    bpy.utils.register_class(ApplyPhonemeAEOperator)
+    bpy.utils.unregister_class(ApplyPhonemeFVOperator)
+    bpy.utils.unregister_class(ApplyPhonemeAEOperator)
+    bpy.utils.unregister_class(ApplyPhonemeAHOperator)
+    bpy.utils.unregister_class(ApplyPhonemeBMPOperator)
+    bpy.utils.unregister_class(ApplyPhonemeChJOperator)
+    bpy.utils.unregister_class(ApplyPhonemeEESZTLDNOperator)
+    bpy.utils.unregister_class(ApplyPhonemeErOperator)
+    bpy.utils.unregister_class(ApplyPhonemeIhOperator)
+    bpy.utils.unregister_class(ApplyPhonemeKGHNGOperator)
+    bpy.utils.unregister_class(ApplyPhonemeOhOperator)
+    bpy.utils.unregister_class(ApplyPhonemeROperator)
+    bpy.utils.unregister_class(ApplyPhonemeThOperator)
+    bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
     
 if __name__ == "__main__":
     register()

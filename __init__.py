@@ -410,7 +410,7 @@ class ApplyPhonemeChJOperator(bpy.types.Operator):
         return {'FINISHED'}
     
 class ApplyPhonemeEESZTLDNOperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_EESZTLDN"
+    bl_idname = "object.apply_phoneme_eesztldn"
     bl_label = "Aplicar EESZTLDN"
     bl_description = "Aplica la configuración del fonema EESZTLDN"
     bl_options = {'REGISTER', 'UNDO'}
@@ -420,7 +420,7 @@ class ApplyPhonemeEESZTLDNOperator(bpy.types.Operator):
         return {'FINISHED'}
     
 class ApplyPhonemeErOperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_Er"
+    bl_idname = "object.apply_phoneme_er"
     bl_label = "Aplicar Er"
     bl_description = "Aplica la configuración del fonema Er"
     bl_options = {'REGISTER', 'UNDO'}
@@ -430,7 +430,7 @@ class ApplyPhonemeErOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 class ApplyPhonemeIhOperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_Ih"
+    bl_idname = "object.apply_phoneme_ih"
     bl_label = "Aplicar Ih"
     bl_description = "Aplica la configuración del fonema Ih"
     bl_options = {'REGISTER', 'UNDO'}
@@ -440,7 +440,7 @@ class ApplyPhonemeIhOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 class ApplyPhonemeKGHNGOperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_KGHNG"
+    bl_idname = "object.apply_phoneme_kghng"
     bl_label = "Aplicar KGHNG"
     bl_description = "Aplica la configuración del fonema KGHNG"
     bl_options = {'REGISTER', 'UNDO'}
@@ -450,7 +450,7 @@ class ApplyPhonemeKGHNGOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 class ApplyPhonemeOhOperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_Oh"
+    bl_idname = "object.apply_phoneme_oh"
     bl_label = "Aplicar Oh"
     bl_description = "Aplica la configuración del fonema Oh"
     bl_options = {'REGISTER', 'UNDO'}
@@ -460,7 +460,7 @@ class ApplyPhonemeOhOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 class ApplyPhonemeROperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_R"
+    bl_idname = "object.apply_phoneme_r"
     bl_label = "Aplicar R"
     bl_description = "Aplica la configuración del fonema R"
     bl_options = {'REGISTER', 'UNDO'}
@@ -470,7 +470,7 @@ class ApplyPhonemeROperator(bpy.types.Operator):
         return {'FINISHED'}
 
 class ApplyPhonemeThOperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_Th"
+    bl_idname = "object.apply_phoneme_th"
     bl_label = "Aplicar Th"
     bl_description = "Aplica la configuración del fonema Th"
     bl_options = {'REGISTER', 'UNDO'}
@@ -480,7 +480,7 @@ class ApplyPhonemeThOperator(bpy.types.Operator):
         return {'FINISHED'}
     
 class ApplyPhonemeWOOOperator(bpy.types.Operator):
-    bl_idname = "object.apply_phoneme_WOO"
+    bl_idname = "object.apply_phoneme_woo"
     bl_label = "Aplicar WOO"
     bl_description = "Aplica la configuración del fonema WOO"
     bl_options = {'REGISTER', 'UNDO'}

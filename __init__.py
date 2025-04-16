@@ -1,3 +1,8 @@
+try:
+    import bpy
+except ImportError:
+    print("Warning: bpy module not found. This script must be run inside Blender.")
+    
 bl_info = {
     "name": "CTRLsAndShapes",
     "description": "Animar y mejorar animaciones desed shape keys",
@@ -8,10 +13,6 @@ bl_info = {
 }
 
 
-try:
-    import bpy
-except ImportError:
-    print("Warning: bpy module not found. This script must be run inside Blender.")
 
 # Lista de shape keys, controladores y direcciones
 control_pairs = {
@@ -130,6 +131,27 @@ objetos_mouth_jaw = [
     "CTRL_C_jaw",
     "CTRL_C_jaw_fwdBack"
 ]
+
+# Libreria para BlendShapes
+
+from .Phon_config import phoneme_configs
+
+def apply_phoneme_config(phoneme_name):
+    print(f"Aplicando configuración para el fonema: {phoneme_name}")
+    if phoneme_name not in phoneme_configs:
+        print(f"Error: El fonema '{phoneme_name}' no está definido en las configuraciones.")
+        return
+
+    config = phoneme_configs[phoneme_name]
+    for controller_name, (value_x, value_y) in config.items():
+        controller_obj = bpy.data.objects.get(controller_name)
+        if controller_obj:
+            # Aplicar los valores a las coordenadas del objeto
+            controller_obj.location.x = value_x
+            controller_obj.location.y = value_y
+            print(f"Configuración aplicada a '{controller_name}': ({value_x}, {value_y})")
+        else:
+            print(f"Error: No se encontró el controlador '{controller_name}' en la escena.")
 
 def Linker():
     print("Ejecutando Linker")
@@ -334,6 +356,28 @@ def seleccionar_objetos(lista_objetos):
             obj.select_set(True)  # Seleccionar el objeto
             bpy.context.view_layer.objects.active = obj  # Asegurar que se mantenga activo
 
+# operadores para cada fonema
+
+class ApplyPhonemeFVOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_fv"
+    bl_label = "Aplicar FV"
+    bl_description = "Aplica la configuración del fonema FV"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("FV")
+        return {'FINISHED'}
+
+
+class ApplyPhonemeAEOperator(bpy.types.Operator):
+    bl_idname = "object.apply_phoneme_ae"
+    bl_label = "Aplicar AE"
+    bl_description = "Aplica la configuración del fonema AE"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        apply_phoneme_config("AE")
+        return {'FINISHED'}
 
 
 class MIADDON_OT_Linker(bpy.types.Operator):
@@ -412,7 +456,6 @@ class OBJECT_OT_select_riggui(bpy.types.Operator):
         self.report({'INFO'}, f"Todos los objetos en la colección '{collection_name}', excepto 'CTRL_faceGUI', han sido seleccionados.")
         return {'FINISHED'}
 
-# Operador para el botón "Sel Brows"
 class SeleccionarObjetosBrowsOperator(bpy.types.Operator):
     bl_idname = "object.seleccionar_objetos_brows"
     bl_label = "Sel Brows"
@@ -423,7 +466,6 @@ class SeleccionarObjetosBrowsOperator(bpy.types.Operator):
         seleccionar_objetos(objetos_brows)  # Pasar la lista correspondiente
         return {'FINISHED'}
 
-# Operador para el botón "Sel E-N-E"
 class SeleccionarObjetosMidHeadOperator(bpy.types.Operator):
     bl_idname = "object.seleccionar_objetos_mid_head"
     bl_label = "Sel E-N-E"
@@ -434,7 +476,6 @@ class SeleccionarObjetosMidHeadOperator(bpy.types.Operator):
         seleccionar_objetos(objetos_mid_Head)  # Pasar la lista correspondiente
         return {'FINISHED'}
 
-# Operador para el botón "Sel Mouth-Jaw"
 class SeleccionarObjetosMouthJawOperator(bpy.types.Operator):
     bl_idname = "object.seleccionar_objetos_mouth_jaw"
     bl_label = "Sel Mouth-Jaw"
@@ -444,6 +485,10 @@ class SeleccionarObjetosMouthJawOperator(bpy.types.Operator):
     def execute(self, context):
         seleccionar_objetos(objetos_mouth_jaw)  # Pasar la lista correspondiente
         return {'FINISHED'}
+
+# Class para Blenshapes
+
+
 
 class MIADDON_PT_Panel(bpy.types.Panel):
     bl_label = "CTRLsAndShapes Panel"
@@ -483,9 +528,15 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")
         row.operator("object.seleccionar_objetos_mouth_jaw", text="Sel Mouth-Jaw")
 
+        # Botones para los fonemas
+        row = layout.row()
+        row.operator("object.apply_phoneme_fv", text="Aplicar FV")
+        row.operator("object.apply_phoneme_ae", text="Aplicar AE")
+
         
 
-# Registrar y desregistrar las clases
+
+
 def register():
     bpy.utils.register_class(MIADDON_PT_Panel)
     bpy.utils.register_class(MIADDON_OT_Linker)
@@ -498,6 +549,9 @@ def register():
     bpy.utils.register_class(SeleccionarObjetosBrowsOperator)
     bpy.utils.register_class(SeleccionarObjetosMidHeadOperator)
     bpy.utils.register_class(SeleccionarObjetosMouthJawOperator)
+    bpy.utils.register_class(ApplyPhonemeFVOperator)
+    bpy.utils.register_class(ApplyPhonemeAEOperator)
+    
     
 def unregister():
     bpy.utils.unregister_class(MIADDON_OT_Linker)
@@ -510,6 +564,8 @@ def unregister():
     bpy.utils.unregister_class(SeleccionarObjetosBrowsOperator)
     bpy.utils.unregister_class(SeleccionarObjetosMidHeadOperator)
     bpy.utils.unregister_class(SeleccionarObjetosMouthJawOperator)
+    bpy.utils.register_class(ApplyPhonemeFVOperator)
+    bpy.utils.register_class(ApplyPhonemeAEOperator)
     
 if __name__ == "__main__":
     register()

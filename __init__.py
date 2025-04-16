@@ -610,17 +610,22 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         layout = self.layout
 
         row = layout.row()
-        
+        row.label(text='Linking head and shapes', icon='OUTLINER')
+
+        row = layout.row()
         row.operator("miaddon.linker", text="Linker", icon='LINKED')
         row.operator("miaddon.unlink", text="Unlink", icon='UNLINKED')
 
         row = layout.row()
-        row.label(icon='MONKEY')
+        row.label(text='Key&Clear', icon='MONKEY')
+        row = layout.row()        
         row.operator("miaddon.clearshapes", text="Clearshapes", icon='MATFLUID')
         row.operator("miaddon.keyshapes", text="Keyshapes", icon='KEYINGSET')
 
         row = layout.row()
-        row.label(icon='MONKEY')
+        row.label(text='Bake Ctrls&Shapes', icon='RESTRICT_SELECT_OFF')
+
+        row = layout.row()
         row.operator("miaddon.bake_ctrlstoshapes", text="Bake_ctrlstoshapes")
 
         row = layout.row()
@@ -629,11 +634,12 @@ class MIADDON_PT_Panel(bpy.types.Panel):
 
         # Agregar el botón del nuevo operador
         row = layout.row()
-        row.label(icon='MONKEY')
+        
         row.operator("object.select_riggui", text="Select RIGGUI")
 
         row = layout.row()
         row.label(text='SET SELECTORS', icon='RESTRICT_SELECT_OFF')
+        row = layout.row()
         row.operator("object.seleccionar_objetos_brows", text="Sel Brows")
         row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")
         row.operator("object.seleccionar_objetos_mouth_jaw", text="Sel Mouth-Jaw")
@@ -641,6 +647,7 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         # Botones para los fonemas
         row = layout.row()
         row.label(text='SET PHONEMES', icon='STATUSBAR')
+        row = layout.row()
         row.operator("object.apply_phoneme_fv", text="FV")
         row.operator("object.apply_phoneme_ae", text="AE")
         row.operator("object.apply_phoneme_ah", text="AH")

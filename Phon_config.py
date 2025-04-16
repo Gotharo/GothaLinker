@@ -11,8 +11,9 @@ phoneme_configs = {
         "CTRL_C_jaw": (0.0000, 0.3210)
     },
     "AH": {
-        "CTRL_R_mouth_pressD": (-7.4505, 0.0865),
-        "CTRL_C_jaw": (-2.486, 0.5748)
+        "CTRL_L_mouth_towardsU": (0.0, 0.2527),
+        "CTRL_R_mouth_pressD": (0.0, 0.0865),
+        "CTRL_C_jaw": (0.0, 0.5748)
     },
     "BMP": {
         "CTRL_L_mouth_towardsU": (0.0, 0.1181),
@@ -22,11 +23,15 @@ phoneme_configs = {
         "CTRL_R_mouth_funnelD": (0.0, 0.8126)
     },
     "EESZTLDN": {
-        "CTRL_L_mouth_sharpCornerPull": (0.0436, 0.3750),
-        "CTRL_R_mouth_sharpCornerPull": (0.4220, 0.3418),
-        "CTRL_C_jaw": (-3.5527, 0.0808),
-        "CTRL_L_mouth_cornerPull": (0.0, 0.3284),
-        "CTRL_R_mouth_cornerPull": (0.0, 0.3284)
+        "CTRL_L_mouth_sharpCornerPull": (0.0, 0.3750),
+        "CTRL_R_mouth_sharpCornerPull": (0.0, 0.3418),
+        "CTRL_L_mouth_cornerPull": (0.0000, 0.3284),
+        "CTRL_R_mouth_cornerPull": (0.0000, 0.3284),
+        "CTRL_L_mouth_dimple": (0.0000, 0.3164),
+        "CTRL_R_mouth_dimple": (0.0000, 0.3164),
+        "CTRL_L_mouth_suckBlow": (0.0000, -0.2026),
+        "CTRL_R_mouth_suckBlow": (0.0000, -0.2026),
+        "CTRL_C_jaw": (0.0000, 0.1299)
     },
     "Er": {
         "CTRL_L_mouth_sharpCornerPull": (0.0000, 0.3247),

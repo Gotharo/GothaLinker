@@ -385,7 +385,7 @@ class MIADDON_OT_Keyshapes(bpy.types.Operator):
         return {'FINISHED'}
 
 class OBJECT_OT_select_riggui(bpy.types.Operator):
-    """Selecciona todos los objetos dentro de la colección 'RIGGUI'"""
+    """Selecciona todos los objetos dentro de la colección 'RIGGUI', excluyendo 'CTRL_faceGUI'"""
     bl_idname = "object.select_riggui"
     bl_label = "Select RIGGUI"
     bl_options = {'REGISTER', 'UNDO'}
@@ -404,12 +404,13 @@ class OBJECT_OT_select_riggui(bpy.types.Operator):
         # Deseleccionar todo antes de seleccionar los objetos en la colección
         bpy.ops.object.select_all(action='DESELECT')
 
-        # Seleccionar todos los objetos dentro de la colección
+        # Seleccionar todos los objetos dentro de la colección, excluyendo 'CTRL_faceGUI'
         for obj in riggui_collection.objects:
-            obj.select_set(True)
+            if obj.name != "CTRL_faceGUI":  # Excluir este objeto específico
+                obj.select_set(True)
 
-        self.report({'INFO'}, f"Todos los objetos en la colección '{collection_name}' han sido seleccionados.")
-        return {'FINISHED'}    
+        self.report({'INFO'}, f"Todos los objetos en la colección '{collection_name}', excepto 'CTRL_faceGUI', han sido seleccionados.")
+        return {'FINISHED'}
 
 # Operador para el botón "Sel Brows"
 class SeleccionarObjetosBrowsOperator(bpy.types.Operator):
@@ -472,18 +473,17 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.operator("miaddon.keyshapes", text="Keyshapes")
 
+
         # Agregar el botón del nuevo operador
         row = layout.row()
         row.operator("object.select_riggui", text="Select RIGGUI")
 
         row = layout.row()
         row.operator("object.seleccionar_objetos_brows", text="Sel Brows")
-
-        row = layout.row()
         row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")
-
-        row = layout.row()
         row.operator("object.seleccionar_objetos_mouth_jaw", text="Sel Mouth-Jaw")
+
+        
 
 # Registrar y desregistrar las clases
 def register():

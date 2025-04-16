@@ -610,54 +610,56 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         layout = self.layout
 
         row = layout.row()
-        row.operator("miaddon.linker", text="Linker")
+        
+        row.operator("miaddon.linker", text="Linker", icon='LINKED')
+        row.operator("miaddon.unlink", text="Unlink", icon='UNLINKED')
 
         row = layout.row()
-        row.operator("miaddon.unlink", text="Unlink")
+        row.label(ICON='MONKEY')
+        row.operator("miaddon.clearshapes", text="Clearshapes", icon='MATFLUID')
+        row.operator("miaddon.keyshapes", text="Keyshapes", icon='KEYINGSET')
 
         row = layout.row()
-        row.operator("miaddon.clearshapes", text="Clearshapes")
-
-        row = layout.row()
+        row.label(ICON='MONKEY')
         row.operator("miaddon.bake_ctrlstoshapes", text="Bake_ctrlstoshapes")
 
         row = layout.row()
         row.operator("miaddon.bake_shapestoctrls", text="Bake_Shapestoctrls")
 
-        row = layout.row()
-        row.operator("miaddon.keyshapes", text="Keyshapes")
-
 
         # Agregar el botón del nuevo operador
         row = layout.row()
+        row.label(ICON='MONKEY')
         row.operator("object.select_riggui", text="Select RIGGUI")
 
         row = layout.row()
+        row.label(text='SET SELECTORS', ICON='RESTRICT_SELECT_OFF')
         row.operator("object.seleccionar_objetos_brows", text="Sel Brows")
         row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")
         row.operator("object.seleccionar_objetos_mouth_jaw", text="Sel Mouth-Jaw")
 
         # Botones para los fonemas
         row = layout.row()
+        row.label(text='SET PHONEMES', ICON='STATUSBAR')
         row.operator("object.apply_phoneme_fv", text="FV")
         row.operator("object.apply_phoneme_ae", text="AE")
-        row.operator("object.apply_phoneme_fv", text="AH")
-        row.operator("object.apply_phoneme_ae", text="BMP")
+        row.operator("object.apply_phoneme_ah", text="AH")
+        row.operator("object.apply_phoneme_bmp", text="BMP")
 
         row = layout.row()
-        row.operator("object.apply_phoneme_fv", text="ChJ")
-        row.operator("object.apply_phoneme_ae", text="EESZTLDN")
-        row.operator("object.apply_phoneme_fv", text="Er")
-        row.operator("object.apply_phoneme_ae", text="Ih")
+        row.operator("object.apply_phoneme_chj", text="ChJ")
+        row.operator("object.apply_phoneme_eesztldn", text="EESZTLDN")
+        row.operator("object.apply_phoneme_er", text="Er")
+        row.operator("object.apply_phoneme_ih", text="Ih")
         
         row = layout.row()
-        row.operator("object.apply_phoneme_fv", text="KGHNG")
-        row.operator("object.apply_phoneme_ae", text="Oh")
-        row.operator("object.apply_phoneme_fv", text="R")
-        row.operator("object.apply_phoneme_ae", text="Th")
+        row.operator("object.apply_phoneme_kghng", text="KGHNG")
+        row.operator("object.apply_phoneme_oh", text="Oh")
+        row.operator("object.apply_phoneme_r", text="R")
+        row.operator("object.apply_phoneme_th", text="Th")
 
         row = layout.row()
-        row.operator("object.apply_phoneme_fv", text="WOO")
+        row.operator("object.apply_phoneme_woo", text="WOO")
         
 
 

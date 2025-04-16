@@ -1,0 +1,399 @@
+bl_info = {
+    "name": "CTRLsAndShapes",
+    "description": "Animar y mejorar animaciones desed shape keys",
+    "author": "Gonzalo Castro (Gotharo)",
+    "version": (2, 0),
+    "blender": (4, 2, 7),
+    "category": "Object",
+}
+
+import bpy
+
+# Lista de shape keys, controladores y direcciones
+control_pairs = {
+
+    "eyeWideRight": ("CTRL_R_eye_blink", ("Y", -1)),   # Y Negativo
+    "eyeWideLeft": ("CTRL_L_eye_blink", ("Y", -1)),    # Y Negativo
+    "eyeBlinkLeft": ("CTRL_L_eye_blink", ("Y", 1)),    # Y Positivo
+    "eyeBlinkRight": ("CTRL_R_eye_blink", ("Y", 1)),   # Y Positivo
+    "mouthRight": ("CTRL_C_mouth", ("X", -1)),         # X Positivo
+    "mouthLeft": ("CTRL_C_mouth", ("X", 1)),         # X Negativo
+    "jawRight": ("CTRL_C_jaw", ("X", 1)),             # X Positivo
+    "jawLeft": ("CTRL_C_jaw", ("X", -1)),             # X Negativo
+    "eyeLookDownLeft": ("CTRL_C_eye", ("Y", -1)),     # Y Negativo
+    "eyeLookDownRight": ("CTRL_C_eye", ("Y", -1)),    # Y Negativo
+    "eyeLookUpRight": ("CTRL_C_eye", ("Y", 1)),       # Y Positivo
+    "eyeLookUpLeft": ("CTRL_C_eye", ("Y", 1)),        # Y Positivo
+    "eyeLookInLeft": ("CTRL_C_eye", ("X", -1)),       # X Negativo
+    "eyeLookOutLeft": ("CTRL_C_eye", ("X", 1)),       # X Positivo
+    "eyeLookInRight": ("CTRL_C_eye", ("X", 1)),       # X Positivo
+    "eyeLookOutRight": ("CTRL_C_eye", ("X", -1)),     # X Negativo
+    "mouthSmileRight": ("CTRL_R_mouth_suckBlow", ("Y", 1)),  # Y Positivo
+    "mouthSmileLeft": ("CTRL_L_mouth_suckBlow", ("Y", 1)),   # Y Positivo
+    "mouthFrownRight": ("CTRL_R_mouth_suckBlow", ("Y", -1)), # Y Negativo
+    "mouthFrownLeft": ("CTRL_L_mouth_suckBlow", ("Y", -1)),  # Y Negativo
+    "eyeLookUpRight": ("CTRL_C_eye", ("Y", 1)),      # Y Positivo
+    "mouthSmileRight": ("CTRL_R_mouth_suckBlow", ("Y", 1)),   # Y Positivo
+    "mouthSmileLeft": ("CTRL_L_mouth_suckBlow", ("Y", 1)),    # Y Positivo
+    "eyeLookUpLeft": ("CTRL_C_eye", ("Y", 1)),       # Y Positivo
+    "eyeSquintRight": ("CTRL_R_eye_squintInner", ("Y", 1)),  # Y Positivo
+    "eyeSquintLeft": ("CTRL_L_eye_squintInner", ("Y", 1)),   # Y Positivo
+    "MouthClose": ("CTRL_R_mouth_pressD", ("Y", 1)),  # Y Positivo
+    "mouthFunnel": ("CTRL_R_mouth_funnelD", ("Y", 1)),  # Y Positivo
+    "mouthPucker": ("CTRL_R_mouth_purseD", ("Y", 1)),  # Y Positivo
+    "mouthDimpleLeft": ("CTRL_L_mouth_dimple", ("Y", 1)),  # Y Positivo
+    "mouthDimpleRight": ("CTRL_R_mouth_dimple", ("Y", 1)),  # Y Positivo
+    "mouthStretchLeft": ("CTRL_L_mouth_stretch", ("Y", 1)),  # Y Positivo
+    "mouthStretchRight": ("CTRL_R_mouth_stretch", ("Y", 1)),  # Y Positivo
+    "mouthRollLower": ("CTRL_R_mouth_towardsD", ("Y", 1)),  # Y Positivo
+    "mouthRollUpper": ("CTRL_R_mouth_towardsU", ("Y", 1)),  # Y Positivo
+    "mouthShrugLower": ("CTRL_L_mouth_towardsD", ("Y", 1)),  # Y Positivo
+    "mouthShrugUpper": ("CTRL_L_mouth_towardsU", ("Y", 1)),  # Y Positivo
+    "mouthPressLeft": ("CTRL_L_mouth_cornerPull", ("Y", 1)),  # Y Positivo
+    "mouthPressRight": ("CTRL_R_mouth_cornerPull", ("Y", 1)),  # Y Positivo
+    "mouthLowerDownLeft": ("CTRL_L_mouth_cornerDepress", ("Y", 1)),  # Y Positivo
+    "mouthLowerDownRight": ("CTRL_R_mouth_cornerDepress", ("Y", 1)),  # Y Positivo
+    "mouthUpperUpLeft": ("CTRL_L_mouth_sharpCornerPull", ("Y", 1)),  # Y Positivo
+    "mouthUpperUpRight": ("CTRL_R_mouth_sharpCornerPull", ("Y", 1)),  # Y Positivo
+    "jawOpen": ("CTRL_C_jaw", ("Y", 1)),  # Y Positivo
+    "jawForward": ("CTRL_C_jaw_fwdBack", ("Y", 1)),  # Y Positivo
+    "browInnerUp": ("CTRL_L_brow_raiseIn", ("Y", 1)),  # Y Positivo
+    "browDownLeft": ("CTRL_L_brow_down", ("Y", 1)),  # Y Positivo
+    "browDownRight": ("CTRL_R_brow_down", ("Y", 1)),  # Y Positivo
+    "browOuterUpLeft": ("CTRL_L_brow_raiseOut", ("Y", 1)),  # Y Positivo
+    "browOuterUpRight": ("CTRL_R_brow_raiseOut", ("Y", 1)),  # Y Positivo
+    "cheekPuff": ("CTRL_L_ear_up", ("Y", 1)),  # Y Positivo
+    "cheekSquintLeft": ("CTRL_L_eye_cheekRaise", ("Y", 1)),  # Y Positivo
+    "cheekSquintRight": ("CTRL_R_eye_cheekRaise", ("Y", 1)),  # Y Positivo
+    "noseSneerLeft": ("CTRL_L_nose_wrinkleUpper", ("Y", 1)),  # Y Positivo
+    "noseSneerRight": ("CTRL_R_nose_wrinkleUpper", ("Y", 1)),  # Y Positivo
+    "tongueOut": ("CTRL_C_tongue_inOut", ("Y", 1)),  # Y Positivo
+
+}
+
+def Linker():
+    print("Ejecutando Linker")
+    selected_obj = bpy.context.object
+    if not selected_obj or not selected_obj.data.shape_keys:
+        print("Error: No hay un objeto seleccionado o no tiene Shape Keys.")
+    else:
+        shape_keys = selected_obj.data.shape_keys.key_blocks
+        riggui_collection = bpy.data.collections.get("RIGGUI")
+        if not riggui_collection:
+            print("Error: La colección 'RIGGUI' no existe en la escena.")
+        else:
+            for shape_key_name, (controller_name, (axis, direction)) in control_pairs.items():
+                shape_key = shape_keys.get(shape_key_name)
+                controller_obj = riggui_collection.objects.get(controller_name)
+                if shape_key and controller_obj:
+                    axis_index = 0 if axis == "X" else 1
+                    driver = shape_key.driver_add("value")
+                    driver.driver.type = 'SCRIPTED'
+                    var = driver.driver.variables.new()
+                    var.name = "controller_pos"
+                    var.type = 'TRANSFORMS'
+                    target = var.targets[0]
+                    target.id = controller_obj
+                    target.transform_type = f"LOC_{axis}"
+                    target.transform_space = 'LOCAL_SPACE'
+                    if direction == -1:
+                        driver.driver.expression = "max(0, min(1, -controller_pos))"
+                    else:
+                        driver.driver.expression = "max(0, min(1, controller_pos))"
+                    print(f"Driver agregado: '{controller_name}' controla '{shape_key_name}' en eje {axis} ({'Negativo' if direction == -1 else 'Positivo'})")
+                else:
+                    print(f"Error: No se encontraron '{shape_key_name}' o '{controller_name}' en la colección 'RIGGUI'.")
+
+def Unlink():
+    print("Ejecutando Unlink")
+    obj = bpy.context.active_object
+    if obj and obj.data.shape_keys:
+        shape_keys = obj.data.shape_keys.key_blocks
+        anim_data = obj.data.shape_keys.animation_data
+        if anim_data:
+            for driver in anim_data.drivers:
+                if driver.data_path.startswith("key_blocks["):
+                    anim_data.drivers.remove(driver)
+            print("Drivers eliminados de todos los shape keys.")
+        else:
+            print("No hay drivers asociados a los shape keys.")
+    else:
+        print("El objeto no tiene shape keys.")
+
+def Clearshapes():
+    print("Ejecutando Clearshapes")
+    obj = bpy.context.active_object
+
+    # Verificar si el objeto tiene shape keys
+    if obj and obj.data.shape_keys:
+        # Obtener los shape keys
+        shape_keys = obj.data.shape_keys.key_blocks
+        
+        # Obtener la animación de datos (animation data) del objeto
+        anim_data = obj.data.shape_keys.animation_data
+        
+        if anim_data:
+            # Recorrer todos los shape keys
+            for shape_key in shape_keys:
+                # Establecer el valor del shape key a 0
+                shape_key.value = 0
+                
+                # Obtener la ruta de datos (data path) del shape key
+                data_path = f'key_blocks["{shape_key.name}"].value'
+                
+                # Buscar y eliminar los keyframes asociados al shape key
+                if anim_data.action:
+                    for fcurve in anim_data.action.fcurves:
+                        if fcurve.data_path == data_path:
+                            # Eliminar todos los keyframes del fcurve
+                            anim_data.action.fcurves.remove(fcurve)
+            
+            print("Todos los valores de los shape keys han sido establecidos a 0 y los keyframes eliminados.")
+        else:
+            print("No hay animación asociada a los shape keys.")
+    else:
+        print("El objeto no tiene shape keys.")
+
+def Bake_ctrlstoshapes():
+    print("Ejecutando Bake_ctrlstoshapes")
+    selected_obj = bpy.context.object
+    if not selected_obj or not selected_obj.data.shape_keys:
+        print("Error: No hay un objeto seleccionado o no tiene Shape Keys.")
+    else:
+        shape_keys = selected_obj.data.shape_keys
+        riggui_collection = bpy.data.collections.get("RIGGUI")
+        if not riggui_collection:
+            print("Error: La colección 'RIGGUI' no existe en la escena.")
+        else:
+            shape_key_curves = {}
+            for shape_key_name, (controller_name, (axis, direction)) in control_pairs.items():
+                shape_key = shape_keys.key_blocks.get(shape_key_name)
+                controller_obj = riggui_collection.objects.get(controller_name)
+                if shape_key and controller_obj:
+                    axis_index = 0 if axis == "X" else 1
+                    if not controller_obj.animation_data or not controller_obj.animation_data.action:
+                        print(f"Advertencia: El controlador '{controller_name}' no tiene datos de animación.")
+                        continue
+                    controller_action = controller_obj.animation_data.action
+                    fcurve = next((fc for fc in controller_action.fcurves if fc.data_path == "location" and fc.array_index == axis_index), None)
+                    if fcurve:
+                        if not shape_keys.animation_data:
+                            shape_keys.animation_data_create()
+                        if not shape_keys.animation_data.action:
+                            shape_keys.animation_data.action = bpy.data.actions.new(name=f"{selected_obj.name}_ShapeKey_Action")
+                        shape_key_action = shape_keys.animation_data.action
+                        shape_key_path = f'key_blocks["{shape_key.name}"].value'
+                        if shape_key_name not in shape_key_curves:
+                            shape_key_fcurve = shape_key_action.fcurves.find(shape_key_path)
+                            if not shape_key_fcurve:
+                                shape_key_fcurve = shape_key_action.fcurves.new(data_path=shape_key_path, index=0)
+                            shape_key_fcurve.keyframe_points.clear()
+                            shape_key_curves[shape_key_name] = shape_key_fcurve
+                        else:
+                            shape_key_fcurve = shape_key_curves[shape_key_name]
+                        for kp in fcurve.keyframe_points:
+                            frame, value = kp.co
+                            new_value = value if direction > 0 else -value
+                            existing_kp = next((p for p in shape_key_fcurve.keyframe_points if p.co.x == frame), None)
+                            if existing_kp:
+                                existing_kp.co.y += new_value
+                            else:
+                                shape_key_fcurve.keyframe_points.insert(frame, new_value)
+                        print(f"Animación copiada de '{controller_name}' a Shape Key '{shape_key_name}' en el eje {axis} ({'Negativo' if direction == -1 else 'Positivo'})")
+            print("Todas las animaciones han sido copiadas correctamente a los Shape Keys.")
+
+def Bake_Shapestoctrls():
+    print("Ejecutando Bake_Shapestoctrls")
+    selected_obj = bpy.context.object
+    if not selected_obj or not selected_obj.data.shape_keys:
+        print("Error: No hay un objeto seleccionado o no tiene Shape Keys.")
+    else:
+        shape_keys = selected_obj.data.shape_keys
+        if not shape_keys.animation_data or not shape_keys.animation_data.action:
+            print("Error: No hay animaciones en los Shape Keys.")
+        else:
+            shape_key_action = shape_keys.animation_data.action
+            riggui_collection = bpy.data.collections.get("RIGGUI")
+            if not riggui_collection:
+                print("Error: La colección 'RIGGUI' no existe en la escena.")
+            else:
+                controller_curves = {}
+                for shape_key_name, (controller_name, (axis, direction)) in control_pairs.items():
+                    shape_key = shape_keys.key_blocks.get(shape_key_name)
+                    controller_obj = riggui_collection.objects.get(controller_name)
+                    if shape_key and controller_obj:
+                        fcurve = shape_key_action.fcurves.find(f'key_blocks["{shape_key.name}"].value')
+                        if fcurve:
+                            axis_index = 0 if axis == "X" else 1
+                            if not controller_obj.animation_data:
+                                controller_obj.animation_data_create()
+                            if not controller_obj.animation_data.action:
+                                controller_obj.animation_data.action = bpy.data.actions.new(name=f"{controller_name}_Action")
+                            controller_action = controller_obj.animation_data.action
+                            path = f'location[{axis_index}]'
+                            if controller_name not in controller_curves:
+                                controller_curves[controller_name] = {}
+                            if path not in controller_curves[controller_name]:
+                                ctrl_fcurve = controller_action.fcurves.find(path)
+                                if not ctrl_fcurve:
+                                    ctrl_fcurve = controller_action.fcurves.new(data_path="location", index=axis_index)
+                                ctrl_fcurve.keyframe_points.clear()
+                                controller_curves[controller_name][path] = ctrl_fcurve
+                            else:
+                                ctrl_fcurve = controller_curves[controller_name][path]
+                            for kp in fcurve.keyframe_points:
+                                frame, value = kp.co
+                                new_value = max(-1, min(1, value if direction > 0 else -value))
+                                existing_kp = next((p for p in ctrl_fcurve.keyframe_points if p.co.x == frame), None)
+                                if existing_kp:
+                                    # Se reemplaza el valor existente sin sumarlo
+                                    existing_kp.co.y = new_value
+                                else:
+                                    ctrl_fcurve.keyframe_points.insert(frame, new_value)
+                            print(f"Animación copiada de Shape Key '{shape_key_name}' a '{controller_name}' en el eje {axis} ({'Negativo' if direction == -1 else 'Positivo'})")
+                print("Todas las animaciones han sido copiadas correctamente a los controladores.")
+
+                
+def Keyshapes():
+    print("Ejecutando Keyshapes")
+    selected_obj = bpy.context.object
+    if selected_obj and selected_obj.type == 'MESH' and selected_obj.data.shape_keys:
+        shape_keys = selected_obj.data.shape_keys.key_blocks
+        current_frame = bpy.context.scene.frame_current
+        for shape_key in shape_keys:
+            shape_key.value = shape_key.value
+            shape_key.keyframe_insert(data_path="value", frame=current_frame)
+        print("Keyframed all shape keys.")
+    else:
+        print("No shape keys found on the active object.")
+
+
+class MIADDON_OT_Linker(bpy.types.Operator):
+    bl_idname = "miaddon.linker"
+    bl_label = "Ejecutar Linker"
+
+    def execute(self, context):
+        Linker()
+        return {'FINISHED'}
+
+class MIADDON_OT_Unlink(bpy.types.Operator):
+    bl_idname = "miaddon.unlink"
+    bl_label = "Ejecutar Unlink"
+
+    def execute(self, context):
+        Unlink()
+        return {'FINISHED'}
+
+class MIADDON_OT_Clearshapes(bpy.types.Operator):
+    bl_idname = "miaddon.clearshapes"
+    bl_label = "Ejecutar Clearshapes"
+
+    def execute(self, context):
+        Clearshapes()
+        return {'FINISHED'}
+    
+class MIADDON_OT_Bake_ctrlstoshapes(bpy.types.Operator):
+    bl_idname = "miaddon.bake_ctrlstoshapes"
+    bl_label = "Ejecutar Bake_ctrlstoshapes"
+
+    def execute(self, context):
+        Bake_ctrlstoshapes()
+        return {'FINISHED'}
+
+class MIADDON_OT_Bake_Shapestoctrls(bpy.types.Operator):
+    bl_idname = "miaddon.bake_shapestoctrls"
+    bl_label = "Ejecutar Bake_Shapestoctrls"
+
+    def execute(self, context):
+        Bake_Shapestoctrls()
+        return {'FINISHED'}
+    
+class MIADDON_OT_Keyshapes(bpy.types.Operator):
+    bl_idname = "miaddon.keyshapes"
+    bl_label = "Ejecutar Keyshapes"
+
+    def execute(self, context):
+        Keyshapes()
+        return {'FINISHED'}
+
+class OBJECT_OT_select_riggui(bpy.types.Operator):
+    """Selecciona todos los objetos dentro de la colección 'RIGGUI'"""
+    bl_idname = "object.select_riggui"
+    bl_label = "Select RIGGUI"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        # Nombre de la colección a seleccionar
+        collection_name = "RIGGUI"
+
+        # Obtener la colección
+        riggui_collection = bpy.data.collections.get(collection_name)
+
+        if not riggui_collection:
+            self.report({'ERROR'}, f"La colección '{collection_name}' no existe en la escena.")
+            return {'CANCELLED'}
+
+        # Deseleccionar todo antes de seleccionar los objetos en la colección
+        bpy.ops.object.select_all(action='DESELECT')
+
+        # Seleccionar todos los objetos dentro de la colección
+        for obj in riggui_collection.objects:
+            obj.select_set(True)
+
+        self.report({'INFO'}, f"Todos los objetos en la colección '{collection_name}' han sido seleccionados.")
+        return {'FINISHED'}    
+   
+class MIADDON_PT_Panel(bpy.types.Panel):
+    bl_label = "CTRLsAndShapes Panel"
+    bl_idname = "MIADDON_PT_Panel"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'CTRLsAndShapes'
+
+    def draw(self, context):
+        layout = self.layout
+
+        row = layout.row()
+        row.operator("miaddon.linker", text="Linker")
+
+        row = layout.row()
+        row.operator("miaddon.unlink", text="Unlink")
+
+        row = layout.row()
+        row.operator("miaddon.clearshapes", text="Clearshapes")
+
+        row = layout.row()
+        row.operator("miaddon.bake_ctrlstoshapes", text="Bake_ctrlstoshapes")
+
+        row = layout.row()
+        row.operator("miaddon.bake_shapestoctrls", text="Bake_Shapestoctrls")
+
+        row = layout.row()
+        row.operator("miaddon.keyshapes", text="Keyshapes")
+
+        # Agregar el botón del nuevo operador
+        row = layout.row()
+        row.operator("object.select_riggui", text="Select RIGGUI")
+
+# Registrar y desregistrar las clases
+def register():
+    bpy.utils.register_class(MIADDON_PT_Panel)
+    bpy.utils.register_class(MIADDON_OT_Linker)
+    bpy.utils.register_class(MIADDON_OT_Unlink)
+    bpy.utils.register_class(MIADDON_OT_Clearshapes)
+    bpy.utils.register_class(MIADDON_OT_Bake_ctrlstoshapes)
+    bpy.utils.register_class(MIADDON_OT_Bake_Shapestoctrls)
+    bpy.utils.register_class(MIADDON_OT_Keyshapes)
+    bpy.utils.register_class(OBJECT_OT_select_riggui)  # Nueva clase
+    
+def unregister():
+    bpy.utils.unregister_class(MIADDON_OT_Linker)
+    bpy.utils.unregister_class(MIADDON_OT_Unlink)
+    bpy.utils.unregister_class(MIADDON_OT_Clearshapes)
+    bpy.utils.unregister_class(MIADDON_OT_Bake_ctrlstoshapes)
+    bpy.utils.unregister_class(MIADDON_OT_Bake_Shapestoctrls)
+    bpy.utils.unregister_class(MIADDON_OT_Keyshapes)
+    bpy.utils.unregister_class(OBJECT_OT_select_riggui)  # Nueva clase
+    
+if __name__ == "__main__":
+    register()

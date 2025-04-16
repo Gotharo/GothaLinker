@@ -615,12 +615,12 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row.operator("miaddon.unlink", text="Unlink", icon='UNLINKED')
 
         row = layout.row()
-        row.label(ICON='MONKEY')
+        row.label(icon='MONKEY')
         row.operator("miaddon.clearshapes", text="Clearshapes", icon='MATFLUID')
         row.operator("miaddon.keyshapes", text="Keyshapes", icon='KEYINGSET')
 
         row = layout.row()
-        row.label(ICON='MONKEY')
+        row.label(icon='MONKEY')
         row.operator("miaddon.bake_ctrlstoshapes", text="Bake_ctrlstoshapes")
 
         row = layout.row()
@@ -629,18 +629,18 @@ class MIADDON_PT_Panel(bpy.types.Panel):
 
         # Agregar el botón del nuevo operador
         row = layout.row()
-        row.label(ICON='MONKEY')
+        row.label(icon='MONKEY')
         row.operator("object.select_riggui", text="Select RIGGUI")
 
         row = layout.row()
-        row.label(text='SET SELECTORS', ICON='RESTRICT_SELECT_OFF')
+        row.label(text='SET SELECTORS', icon='RESTRICT_SELECT_OFF')
         row.operator("object.seleccionar_objetos_brows", text="Sel Brows")
         row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")
         row.operator("object.seleccionar_objetos_mouth_jaw", text="Sel Mouth-Jaw")
 
         # Botones para los fonemas
         row = layout.row()
-        row.label(text='SET PHONEMES', ICON='STATUSBAR')
+        row.label(text='SET PHONEMES', icon='STATUSBAR')
         row.operator("object.apply_phoneme_fv", text="FV")
         row.operator("object.apply_phoneme_ae", text="AE")
         row.operator("object.apply_phoneme_ah", text="AH")

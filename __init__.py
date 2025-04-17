@@ -138,18 +138,27 @@ from .Phon_config import phoneme_configs
 
 def apply_phoneme_config(phoneme_name):
     print(f"Aplicando configuración para el fonema: {phoneme_name}")
+    
     if phoneme_name not in phoneme_configs:
         print(f"Error: El fonema '{phoneme_name}' no está definido en las configuraciones.")
         return
 
     config = phoneme_configs[phoneme_name]
+    
     for controller_name, (value_x, value_y) in config.items():
         controller_obj = bpy.data.objects.get(controller_name)
         if controller_obj:
-            # Aplicar los valores a las coordenadas del objeto
+            # 1. Resetear transformaciones en posición x, y, z
+            controller_obj.location = (0, 0, 0)
+
+            # 2. Aplicar nuevas coordenadas a objetos con el mismo nombre
             controller_obj.location.x = value_x
             controller_obj.location.y = value_y
-            print(f"Configuración aplicada a '{controller_name}': ({value_x}, {value_y})")
+
+            # 3. Agregar un keyframe para fijar las coordenadas aplicadas
+            controller_obj.keyframe_insert(data_path="location", index=-1)
+
+            print(f"Configuración aplicada a '{controller_name}': ({value_x}, {value_y}) y keyframe añadido.")
         else:
             print(f"Error: No se encontró el controlador '{controller_name}' en la escena.")
 

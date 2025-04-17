@@ -138,29 +138,36 @@ from .Phon_config import phoneme_configs
 
 def apply_phoneme_config(phoneme_name):
     print(f"Aplicando configuración para el fonema: {phoneme_name}")
-    
+
+    # Verificar si el fonema existe en el diccionario
     if phoneme_name not in phoneme_configs:
         print(f"Error: El fonema '{phoneme_name}' no está definido en las configuraciones.")
         return
 
+    # Obtener la configuración del fonema
     config = phoneme_configs[phoneme_name]
-    
+
+    # Resetear las transformaciones de todos los objetos seleccionados
+    for obj in bpy.context.selected_objects:
+        obj.location = (0.0, 0.0, 0.0)  # Resetear la posición a (0, 0, 0)
+        print(f"Transformaciones reseteadas para el objeto: {obj.name}")
+
+    # Aplicar las nuevas coordenadas a los objetos con el mismo nombre
     for controller_name, (value_x, value_y) in config.items():
         controller_obj = bpy.data.objects.get(controller_name)
-        if controller_obj:
-            # 1. Resetear transformaciones en posición x, y, z
-            controller_obj.location = (0, 0, 0)
-
-            # 2. Aplicar nuevas coordenadas a objetos con el mismo nombre
+        if controller_obj and controller_obj in bpy.context.selected_objects:
             controller_obj.location.x = value_x
             controller_obj.location.y = value_y
-
-            # 3. Agregar un keyframe para fijar las coordenadas aplicadas
-            controller_obj.keyframe_insert(data_path="location", index=-1)
-
-            print(f"Configuración aplicada a '{controller_name}': ({value_x}, {value_y}) y keyframe añadido.")
+            print(f"Coordenadas aplicadas a '{controller_name}': ({value_x}, {value_y})")
         else:
-            print(f"Error: No se encontró el controlador '{controller_name}' en la escena.")
+            print(f"Advertencia: El controlador '{controller_name}' no está seleccionado o no existe en la escena.")
+
+    # Agregar un keyframe para todos los objetos seleccionados
+    for obj in bpy.context.selected_objects:
+        obj.keyframe_insert(data_path="location", index=-1)  # Insertar keyframe para la ubicación
+        print(f"Keyframe añadido para el objeto: {obj.name}")
+
+    print(f"Configuración del fonema '{phoneme_name}' aplicada correctamente.")
 
 def Linker():
     print("Ejecutando Linker")

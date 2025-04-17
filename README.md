@@ -1,3 +1,10 @@
+Version 2.2
+<br>
+-se mejora workflow, al aplicar fonema se resetean transformaciones 
+<br>
+de controladores seleccionados y hace un keyframe para conservar pose.
+
+
 Version 2.1
 <br>
 -se optimizan precision de los bakes.

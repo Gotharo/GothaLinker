@@ -633,12 +633,13 @@ class MIADDON_PT_Panel(bpy.types.Panel):
 
 
         # Agregar el botón del nuevo operador
-        row = layout.row()
-        
-        row.operator("object.select_riggui", text="Select RIGGUI")
 
         row = layout.row()
         row.label(text='SET SELECTORS', icon='RESTRICT_SELECT_OFF')
+
+        row = layout.row()       
+        row.operator("object.select_riggui", text="Select RIGGUI")
+        
         row = layout.row()
         row.operator("object.seleccionar_objetos_brows", text="Sel Brows")
         row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")

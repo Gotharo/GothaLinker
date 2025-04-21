@@ -3,6 +3,8 @@ Version 2.2
 -se mejora workflow, al aplicar fonema se resetean transformaciones 
 <br>
 de controladores seleccionados y hace un keyframe para conservar pose.
+<br>
+se agrega BS mouthClose con minusculas al diccionario.
 
 
 Version 2.1

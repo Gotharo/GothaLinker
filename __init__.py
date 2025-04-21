@@ -44,6 +44,7 @@ control_pairs = {
     "eyeSquintRight": ("CTRL_R_eye_squintInner", ("Y", 1)),  # Y Positivo
     "eyeSquintLeft": ("CTRL_L_eye_squintInner", ("Y", 1)),   # Y Positivo
     "MouthClose": ("CTRL_R_mouth_pressD", ("Y", 1)),  # Y Positivo
+    "mouthClose": ("CTRL_R_mouth_pressD", ("Y", 1)),  # Y Positivo
     "mouthFunnel": ("CTRL_R_mouth_funnelD", ("Y", 1)),  # Y Positivo
     "mouthPucker": ("CTRL_R_mouth_purseD", ("Y", 1)),  # Y Positivo
     "mouthDimpleLeft": ("CTRL_L_mouth_dimple", ("Y", 1)),  # Y Positivo

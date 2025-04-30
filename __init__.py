@@ -7,8 +7,8 @@ bl_info = {
     "name": "GothaLinker",
     "description": "Animar y mejorar animaciones desed shape keys",
     "author": "Gonzalo Castro (Gotharo)",
-    "version": (2, 3, 0),
-    "blender": (4, 2, 7),
+    "version": (2, 3),
+    "blender": (4, 2),
     "category": "Object",
 }
 

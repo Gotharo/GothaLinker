@@ -624,6 +624,9 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row.operator("object.apply_phoneme_woo", text="WOO")
 
         row = layout.row()
+        row.label(text='SET SELECTOR FINGERS', icon='STATUSBAR')
+
+        row = layout.row()
         row.operator("object.seleccionar_left_hand_bones", text="L_Fingers")
         row.operator("object.seleccionar_right_hand_bones", text="R_Fingers")
 
@@ -684,6 +687,7 @@ def unregister():
     bpy.utils.unregister_class(ApplyPhonemeThOperator)
     bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
     bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
+    bpy.utils.unregister_class(SeleccionarLeftHandBonesOperator)
     
 if __name__ == "__main__":
     register()

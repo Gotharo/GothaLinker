@@ -1,6 +1,8 @@
 Version 2.3
 <br>
 -se agregan set selector para dedos ambas manos
+
+
 Version 2.2
 <br>
 -se mejora workflow, al aplicar fonema se resetean transformaciones 

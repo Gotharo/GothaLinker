@@ -598,6 +598,9 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row.operator("object.seleccionar_objetos_brows", text="Sel Brows")
         row.operator("object.seleccionar_objetos_mid_head", text="Sel E-N-E")
         row.operator("object.seleccionar_objetos_mouth_jaw", text="Sel Mouth-Jaw")
+        row = layout.row()
+        row.operator("object.seleccionar_left_hand_bones", text="L_Fingers")
+        row.operator("object.seleccionar_right_hand_bones", text="R_Fingers")
 
         # Botones para los fonemas
         row = layout.row()
@@ -623,12 +626,9 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.operator("object.apply_phoneme_woo", text="WOO")
 
-        row = layout.row()
-        row.label(text='SET SELECTOR FINGERS', icon='STATUSBAR')
+        
 
-        row = layout.row()
-        row.operator("object.seleccionar_left_hand_bones", text="L_Fingers")
-        row.operator("object.seleccionar_right_hand_bones", text="R_Fingers")
+        
 
         
 

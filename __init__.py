@@ -7,135 +7,58 @@ bl_info = {
     "name": "GothaLinker",
     "description": "Animar y mejorar animaciones desed shape keys",
     "author": "Gonzalo Castro (Gotharo)",
-    "version": (2, 2, 0),
+    "version": (2, 3, 0),
     "blender": (4, 2, 7),
     "category": "Object",
 }
 
-
-
-# Lista de shape keys, controladores y direcciones
-control_pairs = {
-
-    "eyeWideRight": ("CTRL_R_eye_blink", ("Y", -1)),   # Y Negativo
-    "eyeWideLeft": ("CTRL_L_eye_blink", ("Y", -1)),    # Y Negativo
-    "eyeBlinkLeft": ("CTRL_L_eye_blink", ("Y", 1)),    # Y Positivo
-    "eyeBlinkRight": ("CTRL_R_eye_blink", ("Y", 1)),   # Y Positivo
-    "mouthRight": ("CTRL_C_mouth", ("X", -1)),         # X Positivo
-    "mouthLeft": ("CTRL_C_mouth", ("X", 1)),         # X Negativo
-    "jawRight": ("CTRL_C_jaw", ("X", 1)),             # X Positivo
-    "jawLeft": ("CTRL_C_jaw", ("X", -1)),             # X Negativo
-    "eyeLookDownLeft": ("CTRL_C_eye", ("Y", -1)),     # Y Negativo
-    "eyeLookDownRight": ("CTRL_C_eye", ("Y", -1)),    # Y Negativo
-    "eyeLookUpRight": ("CTRL_C_eye", ("Y", 1)),       # Y Positivo
-    "eyeLookUpLeft": ("CTRL_C_eye", ("Y", 1)),        # Y Positivo
-    "eyeLookInLeft": ("CTRL_C_eye", ("X", -1)),       # X Negativo
-    "eyeLookOutLeft": ("CTRL_C_eye", ("X", 1)),       # X Positivo
-    "eyeLookInRight": ("CTRL_C_eye", ("X", 1)),       # X Positivo
-    "eyeLookOutRight": ("CTRL_C_eye", ("X", -1)),     # X Negativo
-    "mouthSmileRight": ("CTRL_R_mouth_suckBlow", ("Y", 1)),  # Y Positivo
-    "mouthSmileLeft": ("CTRL_L_mouth_suckBlow", ("Y", 1)),   # Y Positivo
-    "mouthFrownRight": ("CTRL_R_mouth_suckBlow", ("Y", -1)), # Y Negativo
-    "mouthFrownLeft": ("CTRL_L_mouth_suckBlow", ("Y", -1)),  # Y Negativo
-    "eyeLookUpRight": ("CTRL_C_eye", ("Y", 1)),      # Y Positivo
-    "mouthSmileRight": ("CTRL_R_mouth_suckBlow", ("Y", 1)),   # Y Positivo
-    "mouthSmileLeft": ("CTRL_L_mouth_suckBlow", ("Y", 1)),    # Y Positivo
-    "eyeLookUpLeft": ("CTRL_C_eye", ("Y", 1)),       # Y Positivo
-    "eyeSquintRight": ("CTRL_R_eye_squintInner", ("Y", 1)),  # Y Positivo
-    "eyeSquintLeft": ("CTRL_L_eye_squintInner", ("Y", 1)),   # Y Positivo
-    "MouthClose": ("CTRL_R_mouth_pressD", ("Y", 1)),  # Y Positivo
-    "mouthClose": ("CTRL_R_mouth_pressD", ("Y", 1)),  # Y Positivo
-    "mouthFunnel": ("CTRL_R_mouth_funnelD", ("Y", 1)),  # Y Positivo
-    "mouthPucker": ("CTRL_R_mouth_purseD", ("Y", 1)),  # Y Positivo
-    "mouthDimpleLeft": ("CTRL_L_mouth_dimple", ("Y", 1)),  # Y Positivo
-    "mouthDimpleRight": ("CTRL_R_mouth_dimple", ("Y", 1)),  # Y Positivo
-    "mouthStretchLeft": ("CTRL_L_mouth_stretch", ("Y", 1)),  # Y Positivo
-    "mouthStretchRight": ("CTRL_R_mouth_stretch", ("Y", 1)),  # Y Positivo
-    "mouthRollLower": ("CTRL_R_mouth_towardsD", ("Y", 1)),  # Y Positivo
-    "mouthRollUpper": ("CTRL_R_mouth_towardsU", ("Y", 1)),  # Y Positivo
-    "mouthShrugLower": ("CTRL_L_mouth_towardsD", ("Y", 1)),  # Y Positivo
-    "mouthShrugUpper": ("CTRL_L_mouth_towardsU", ("Y", 1)),  # Y Positivo
-    "mouthPressLeft": ("CTRL_L_mouth_cornerPull", ("Y", 1)),  # Y Positivo
-    "mouthPressRight": ("CTRL_R_mouth_cornerPull", ("Y", 1)),  # Y Positivo
-    "mouthLowerDownLeft": ("CTRL_L_mouth_cornerDepress", ("Y", 1)),  # Y Positivo
-    "mouthLowerDownRight": ("CTRL_R_mouth_cornerDepress", ("Y", 1)),  # Y Positivo
-    "mouthUpperUpLeft": ("CTRL_L_mouth_sharpCornerPull", ("Y", 1)),  # Y Positivo
-    "mouthUpperUpRight": ("CTRL_R_mouth_sharpCornerPull", ("Y", 1)),  # Y Positivo
-    "jawOpen": ("CTRL_C_jaw", ("Y", 1)),  # Y Positivo
-    "jawForward": ("CTRL_C_jaw_fwdBack", ("Y", 1)),  # Y Positivo
-    "browInnerUp": ("CTRL_L_brow_raiseIn", ("Y", 1)),  # Y Positivo
-    "browDownLeft": ("CTRL_L_brow_down", ("Y", 1)),  # Y Positivo
-    "browDownRight": ("CTRL_R_brow_down", ("Y", 1)),  # Y Positivo
-    "browOuterUpLeft": ("CTRL_L_brow_raiseOut", ("Y", 1)),  # Y Positivo
-    "browOuterUpRight": ("CTRL_R_brow_raiseOut", ("Y", 1)),  # Y Positivo
-    "cheekPuff": ("CTRL_L_ear_up", ("Y", 1)),  # Y Positivo
-    "cheekSquintLeft": ("CTRL_L_eye_cheekRaise", ("Y", 1)),  # Y Positivo
-    "cheekSquintRight": ("CTRL_R_eye_cheekRaise", ("Y", 1)),  # Y Positivo
-    "noseSneerLeft": ("CTRL_L_nose_wrinkleUpper", ("Y", 1)),  # Y Positivo
-    "noseSneerRight": ("CTRL_R_nose_wrinkleUpper", ("Y", 1)),  # Y Positivo
-    "tongueOut": ("CTRL_C_tongue_inOut", ("Y", 1)),  # Y Positivo
-
-}
-
-# Listas de objetos
-objetos_brows = [
-    "CTRL_L_brow_raiseIn",
-    "CTRL_L_brow_raiseOut",
-    "CTRL_R_brow_raiseOut",
-    "CTRL_L_brow_down",
-    "CTRL_R_brow_down",
-    "CTRL_L_brow_lateral",
-    "CTRL_R_brow_lateral"
-]
-
-objetos_mid_Head = [
-    "CTRL_C_eye",
-    "CTRL_L_eye",
-    "CTRL_R_eye",
-    "CTRL_L_eye_squintInner",
-    "CTRL_R_eye_squintInner",
-    "CTRL_L_eye_cheekRaise",
-    "CTRL_R_eye_cheekRaise",
-    "CTRL_L_eye_blink",
-    "CTRL_R_eye_blink",
-    "CTRL_C_eye_parallelLook",
-    "CTRL_L_ear_up",
-    "CTRL_L_nose",
-    "CTRL_R_nose",
-    "CTRL_L_nose_wrinkleUpper",
-    "CTRL_R_nose_wrinkleUpper"
-]
-
-objetos_mouth_jaw = [
-    
-    "CTRL_C_mouth",
-    "CTRL_L_mouth_sharpCornerPull",
-    "CTRL_R_mouth_sharpCornerPull",
-    "CTRL_L_mouth_cornerPull",
-    "CTRL_R_mouth_cornerPull",
-    "CTRL_L_mouth_dimple",
-    "CTRL_R_mouth_dimple",
-    "CTRL_L_mouth_cornerDepress",
-    "CTRL_R_mouth_cornerDepress",
-    "CTRL_L_mouth_stretch",
-    "CTRL_R_mouth_stretch",
-    "CTRL_L_mouth_suckBlow",
-    "CTRL_R_mouth_suckBlow",
-    "CTRL_R_mouth_purseD",
-    "CTRL_L_mouth_towardsU",
-    "CTRL_R_mouth_towardsU",
-    "CTRL_L_mouth_towardsD",
-    "CTRL_R_mouth_towardsD",
-    "CTRL_R_mouth_funnelD",
-    "CTRL_R_mouth_pressD",
-    "CTRL_C_tongue_inOut",
-    "CTRL_C_jaw",
-    "CTRL_C_jaw_fwdBack"
-]
-
 # Libreria para BlendShapes
 
 from .Phon_config import phoneme_configs
+from .Phon_config import control_pairs
+from .Phon_config import objetos_brows
+from .Phon_config import objetos_mid_Head
+from .Phon_config import objetos_mouth_jaw
+
+def seleccionar_huesos_left_hand():
+    """Selecciona los huesos de la mano izquierda en el armature seleccionado."""
+    left_hand_bones = [
+        "left_pinky1_base", "left_pinky1", "left_pinky2", "left_pinky3",
+        "left_ring1_base", "left_ring1", "left_ring2", "left_ring3",
+        "left_middle1_base", "left_middle1", "left_middle2", "left_middle3",
+        "left_index1_base", "left_index1", "left_index2", "left_index3",
+        "left_thumb1_base", "left_thumb1", "left_thumb2", "left_thumb3"
+    ]
+
+    selected_objects = [obj for obj in bpy.context.selected_objects if obj.type == 'ARMATURE']
+
+    if selected_objects:
+        armature = selected_objects[0]  
+        bpy.ops.pose.select_all(action='DESELECT')
+        
+        for bone in armature.pose.bones:
+            if bone.name in left_hand_bones:
+                bone.bone.select = True
+
+def seleccionar_huesos_right_hand():
+    """Selecciona los huesos de la mano derecha en el armature seleccionado."""
+    right_hand_bones = [
+        "right_pinky1_base", "right_pinky1", "right_pinky2", "right_pinky3",
+        "right_ring1_base", "right_ring1", "right_ring2", "right_ring3",
+        "right_middle1_base", "right_middle1", "right_middle2", "right_middle3",
+        "right_index1_base", "right_index1", "right_index2", "right_index3",
+        "right_thumb1_base", "right_thumb1", "right_thumb2", "right_thumb3"
+    ]
+
+    selected_objects = [obj for obj in bpy.context.selected_objects if obj.type == 'ARMATURE']
+
+    if selected_objects:
+        armature = selected_objects[0]  
+        bpy.ops.pose.select_all(action='DESELECT')
+        
+        for bone in armature.pose.bones:
+            if bone.name in right_hand_bones:
+                bone.bone.select = True
 
 def apply_phoneme_config(phoneme_name):
     print(f"Aplicando configuración para el fonema: {phoneme_name}")
@@ -375,6 +298,24 @@ def seleccionar_objetos(lista_objetos):
 
 # operadores para cada fonema
 
+class SeleccionarLeftHandBonesOperator(bpy.types.Operator):
+    """Seleccionar huesos de la mano izquierda"""
+    bl_idname = "object.seleccionar_left_hand_bones"
+    bl_label = "Seleccionar Huesos Left Hand"
+
+    def execute(self, context):
+        seleccionar_huesos_left_hand()
+        return {'FINISHED'}
+
+class SeleccionarRightHandBonesOperator(bpy.types.Operator):
+    """Seleccionar huesos de la mano right"""
+    bl_idname = "object.seleccionar_right_hand_bones"
+    bl_label = "Seleccionar Huesos Right Hand"
+
+    def execute(self, context):
+        seleccionar_huesos_right_hand()
+        return {'FINISHED'}
+
 class ApplyPhonemeFVOperator(bpy.types.Operator):
     bl_idname = "object.apply_phoneme_fv"
     bl_label = "Aplicar FV"
@@ -384,7 +325,6 @@ class ApplyPhonemeFVOperator(bpy.types.Operator):
     def execute(self, context):
         apply_phoneme_config("FV")
         return {'FINISHED'}
-
 
 class ApplyPhonemeAEOperator(bpy.types.Operator):
     bl_idname = "object.apply_phoneme_ae"
@@ -648,9 +588,6 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.operator("miaddon.bake_shapestoctrls", text="Bake_Shapestoctrls")
 
-
-        # Agregar el botón del nuevo operador
-
         row = layout.row()
         row.label(text='SET SELECTORS', icon='RESTRICT_SELECT_OFF')
 
@@ -685,6 +622,11 @@ class MIADDON_PT_Panel(bpy.types.Panel):
 
         row = layout.row()
         row.operator("object.apply_phoneme_woo", text="WOO")
+
+        row = layout.row()
+        row.operator("object.seleccionar_left_hand_bones", text="L_Fingers")
+        row.operator("object.seleccionar_right_hand_bones", text="R_Fingers")
+
         
 
 
@@ -713,6 +655,8 @@ def register():
     bpy.utils.register_class(ApplyPhonemeROperator)
     bpy.utils.register_class(ApplyPhonemeThOperator)
     bpy.utils.register_class(ApplyPhonemeWOOOperator)
+    bpy.utils.register_class(SeleccionarLeftHandBonesOperator)
+    bpy.utils.register_class(SeleccionarRightHandBonesOperator)
     
     
 def unregister():
@@ -739,6 +683,7 @@ def unregister():
     bpy.utils.unregister_class(ApplyPhonemeROperator)
     bpy.utils.unregister_class(ApplyPhonemeThOperator)
     bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
+    bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
     
 if __name__ == "__main__":
     register()

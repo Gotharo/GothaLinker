@@ -23,11 +23,11 @@ from .Phon_config import objetos_mouth_jaw
 def seleccionar_huesos_left_hand():
     """Selecciona los huesos de la mano izquierda en el armature seleccionado."""
     left_hand_bones = [
-        "left_pinky1_base", "left_pinky1", "left_pinky2", "left_pinky3",
-        "left_ring1_base", "left_ring1", "left_ring2", "left_ring3",
-        "left_middle1_base", "left_middle1", "left_middle2", "left_middle3",
-        "left_index1_base", "left_index1", "left_index2", "left_index3",
-        "left_thumb1_base", "left_thumb1", "left_thumb2", "left_thumb3"
+        "c_pinky1_base.l", "c_pinky1.l", "c_pinky2.l", "c_pinky3.l",
+        "c_ring1_base.l", "c_ring1.l", "c_ring2.l", "c_ring3.l",
+        "c_middle1_base.l", "c_middle1.l", "c_middle2.l", "c_middle3.l",
+        "c_index1_base.l", "c_index1.l", "c_index2.l", "c_index3.l",
+        "c_thumb1_base.l", "c_thumb1.l", "c_thumb2.l", "c_thumb3.l"
     ]
 
     selected_objects = [obj for obj in bpy.context.selected_objects if obj.type == 'ARMATURE']
@@ -43,11 +43,11 @@ def seleccionar_huesos_left_hand():
 def seleccionar_huesos_right_hand():
     """Selecciona los huesos de la mano derecha en el armature seleccionado."""
     right_hand_bones = [
-        "right_pinky1_base", "right_pinky1", "right_pinky2", "right_pinky3",
-        "right_ring1_base", "right_ring1", "right_ring2", "right_ring3",
-        "right_middle1_base", "right_middle1", "right_middle2", "right_middle3",
-        "right_index1_base", "right_index1", "right_index2", "right_index3",
-        "right_thumb1_base", "right_thumb1", "right_thumb2", "right_thumb3"
+        "c_pinky1_base.r", "c_pinky1.r", "c_pinky2.r", "c_pinky3.r",
+        "c_ring1_base.r", "c_ring1.r", "c_ring2.r", "c_ring3.r",
+        "c_middle1_base.r", "c_middle1.r", "c_middle2.r", "c_middle3.r",
+        "c_index1_base.r", "c_index1.r", "c_index2.r", "c_index3.r",
+        "c_thumb1_base.r", "c_thumb1.r", "c_thumb2.r", "c_thumb3.r"
     ]
 
     selected_objects = [obj for obj in bpy.context.selected_objects if obj.type == 'ARMATURE']

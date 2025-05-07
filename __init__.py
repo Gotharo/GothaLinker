@@ -650,6 +650,11 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row.operator("Copy Loc-Rot")  # Botón para copiar transformaciones
 
 def register():
+    try:
+        bpy.utils.register_class(MIADDON_PT_Panel)
+    except ValueError:
+        print("MIADDON_PT_Panel ya está registrado.")
+
     bpy.utils.register_class(MIADDON_PT_Panel)
     bpy.utils.register_class(MIADDON_OT_Linker)
     bpy.utils.register_class(MIADDON_OT_Unlink)
@@ -679,6 +684,7 @@ def register():
     bpy.utils.register_class(MIADDON_PT_Panel)
 
 def unregister():
+    bpy.utils.unregister_class(MIADDON_PT_Panel)
     bpy.utils.unregister_class(MIADDON_OT_Linker)
     bpy.utils.unregister_class(MIADDON_OT_Unlink)
     bpy.utils.unregister_class(MIADDON_OT_Clearshapes)
@@ -704,7 +710,7 @@ def unregister():
     bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
     bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
     bpy.utils.unregister_class(SeleccionarLeftHandBonesOperator)
-    bpy.utils.unregister_class(MIADDON_PT_Panel)
+    
 
     
 if __name__ == "__main__":

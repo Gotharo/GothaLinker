@@ -72,4 +72,9 @@ def update_list(self, context):
 
     return filtered_objects
 
+# Funciones de registro y desregistro
+def register():
+    bpy.utils.register_class(CopyTransformsOperator)
 
+def unregister():
+    bpy.utils.unregister_class(CopyTransformsOperator)

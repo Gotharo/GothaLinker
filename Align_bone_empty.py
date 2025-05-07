@@ -49,9 +49,10 @@ class CopyTransformsOperator(bpy.types.Operator):
             object_obj.keyframe_insert(data_path="location")  # Agregar keyframe para la ubicación
             object_obj.keyframe_insert(data_path="rotation_euler")  # Agregar keyframe para la rotación
         elif object_bone:
+            # Convertir World Space a Pose Space y aplicar al bone
             object_bone.matrix = pose_matrix  # Copia la transformación si es un bone
             object_bone.keyframe_insert(data_path="location")  # Agregar keyframe para la ubicación
-            object_bone.keyframe_insert(data_path="rotation_euler")  # Agregar keyframe para la rotación
+            object_bone.keyframe_insert(data_path="rotation_quaternion")  # Agregar keyframe para la rotación
 
         # Agregar keyframes al Target si es un objeto
         if target_obj:
@@ -60,17 +61,6 @@ class CopyTransformsOperator(bpy.types.Operator):
 
         self.report({'INFO'}, f"El Object '{object_name}' ahora copia la posición y rotación de '{target_name}' en World Space. Keyframes añadidos.")
         return {'FINISHED'}
-
-def update_list(self, context):
-    """Filtrar objetos Empty y bones con 'ik' en su nombre"""
-    filtered_objects = [(obj.name, obj.name, "") for obj in bpy.data.objects if obj.type == 'EMPTY']
-    
-    armature_obj = bpy.context.object
-    if armature_obj and armature_obj.type == 'ARMATURE':
-        filtered_bones = [(bone.name, bone.name, "") for bone in armature_obj.pose.bones if "ik" in bone.name.lower()]
-        filtered_objects.extend(filtered_bones)
-
-    return filtered_objects
 
 # Funciones de registro y desregistro
 def register():

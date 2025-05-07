@@ -13,15 +13,22 @@ bl_info = {
 }
 
 # Aligner Tool
-from .Align_bone_empty import CopyTransformsPanel, CopyTransformsOperator, register as align_register, unregister as align_unregister
+from .Align_bone_empty import CopyTransformsOperator, update_list, register as align_register, unregister as align_unregister
 
-def register():
-    align_register()  # Registrar las clases del script Align_bone-empty.py
-    # Aquí puedes registrar otras clases si es necesario
+# Propiedades para los inputs
+bpy.types.Scene.target_dropdown = bpy.props.EnumProperty(
+    name="Target",
+    description="Selecciona el Target",
+    items=update_list
+)
 
-def unregister():
-    align_unregister()  # Desregistrar las clases del script Align_bone-empty.py
-    # Aquí puedes desregistrar otras clases si es necesario
+bpy.types.Scene.object_dropdown = bpy.props.EnumProperty(
+    name="Object",
+    description="Selecciona el Object",
+    items=update_list
+)
+
+
 
 # Libreria para BlendShapes
 
@@ -669,8 +676,8 @@ def register():
     bpy.utils.register_class(ApplyPhonemeWOOOperator)
     bpy.utils.register_class(SeleccionarLeftHandBonesOperator)
     bpy.utils.register_class(SeleccionarRightHandBonesOperator)
-    align_register()
-    bpy.utils.register_class(GothaLinkerPanel) 
+    align_register()  
+    bpy.utils.register_class(MIADDON_PT_Panel)
 
 def unregister():
     bpy.utils.unregister_class(MIADDON_OT_Linker)
@@ -699,8 +706,8 @@ def unregister():
     bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
     bpy.utils.unregister_class(SeleccionarLeftHandBonesOperator)
 
-    align_unregister()
-    bpy.utils.unregister_class(GothaLinkerPanel)
+    align_unregister()  
+    bpy.utils.unregister_class(MIADDON_PT_Panel)
     
 if __name__ == "__main__":
     register()

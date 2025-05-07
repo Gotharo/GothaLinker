@@ -1,19 +1,5 @@
 import bpy
 
-class CopyTransformsPanel(bpy.types.Panel):
-    """Panel para copiar transformaciones entre Target y Object en Pose Mode"""
-    bl_label = "Copy Transforms"
-    bl_idname = "PT_CopyTransforms"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = "CopyTransforms"
-
-    def draw(self, context):
-        layout = self.layout
-        layout.prop(context.scene, "target_dropdown")  # Filtrado para Target (Emptys y Bones IK)
-        layout.prop(context.scene, "object_dropdown")  # Filtrado para Object (Emptys y Bones IK)
-        layout.operator("object.copy_transforms")
-
 class CopyTransformsOperator(bpy.types.Operator):
     """Operador para aplicar la transformación"""
     bl_idname = "object.copy_transforms"
@@ -86,17 +72,4 @@ def update_list(self, context):
 
     return filtered_objects
 
-def register():
-    bpy.utils.register_class(CopyTransformsPanel)
-    bpy.utils.register_class(CopyTransformsOperator)
-    bpy.types.Scene.target_dropdown = bpy.props.EnumProperty(name="Target", items=update_list)
-    bpy.types.Scene.object_dropdown = bpy.props.EnumProperty(name="Object", items=update_list)
 
-def unregister():
-    bpy.utils.unregister_class(CopyTransformsPanel)
-    bpy.utils.unregister_class(CopyTransformsOperator)
-    del bpy.types.Scene.target_dropdown
-    del bpy.types.Scene.object_dropdown
-
-if __name__ == "__main__":
-    register()

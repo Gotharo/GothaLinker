@@ -7,10 +7,21 @@ bl_info = {
     "name": "GothaLinker",
     "description": "Animar y mejorar animaciones desed shape keys",
     "author": "Gonzalo Castro (Gotharo)",
-    "version": (2, 3),
+    "version": (2, 4),
     "blender": (4, 2),
     "category": "Object",
 }
+
+# Aligner Tool
+from .Align_bone_empty import CopyTransformsPanel, CopyTransformsOperator, register as align_register, unregister as align_unregister
+
+def register():
+    align_register()  # Registrar las clases del script Align_bone-empty.py
+    # Aquí puedes registrar otras clases si es necesario
+
+def unregister():
+    align_unregister()  # Desregistrar las clases del script Align_bone-empty.py
+    # Aquí puedes desregistrar otras clases si es necesario
 
 # Libreria para BlendShapes
 
@@ -554,8 +565,6 @@ class SeleccionarObjetosMouthJawOperator(bpy.types.Operator):
 
 # Class para Blenshapes
 
-
-
 class MIADDON_PT_Panel(bpy.types.Panel):
     bl_label = "CTRLsAndShapes Panel"
     bl_idname = "MIADDON_PT_Panel"
@@ -626,12 +635,12 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.operator("object.apply_phoneme_woo", text="WOO")
 
-        
-
-        
-
-        
-
+        row = layout.row()
+        row.label(text="Aligner Tool", icon='GROUP_VCOL')
+        row = layout.row()
+        row.prop(context.scene, "Target")  # Input para seleccionar el Target
+        row.prop(context.scene, "Object")  # Input para seleccionar el Object
+        row.operator("Copy Loc-Rot")  # Botón para copiar transformaciones
 
 def register():
     bpy.utils.register_class(MIADDON_PT_Panel)
@@ -660,8 +669,9 @@ def register():
     bpy.utils.register_class(ApplyPhonemeWOOOperator)
     bpy.utils.register_class(SeleccionarLeftHandBonesOperator)
     bpy.utils.register_class(SeleccionarRightHandBonesOperator)
-    
-    
+    align_register()
+    bpy.utils.register_class(GothaLinkerPanel) 
+
 def unregister():
     bpy.utils.unregister_class(MIADDON_OT_Linker)
     bpy.utils.unregister_class(MIADDON_OT_Unlink)
@@ -688,6 +698,9 @@ def unregister():
     bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
     bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
     bpy.utils.unregister_class(SeleccionarLeftHandBonesOperator)
+
+    align_unregister()
+    bpy.utils.unregister_class(GothaLinkerPanel)
     
 if __name__ == "__main__":
     register()

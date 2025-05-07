@@ -51,8 +51,19 @@ class CopyTransformsOperator(bpy.types.Operator):
         elif target_bone:
             world_matrix = armature_obj.matrix_world @ target_bone.matrix
 
-        # Convertir la matriz de World Space a Pose Space
-        pose_matrix = armature_obj.matrix_world.inverted() @ world_matrix
+        # Calcular la distancia real entre el Empty y el hueso
+        if target_obj and object_bone:
+            target_location = target_obj.matrix_world.translation
+            bone_world_location = (armature_obj.matrix_world @ object_bone.matrix).translation
+            offset_vector = target_location - bone_world_location
+
+            # Ajustar la posición del hueso en Pose Space
+            object_bone.location = armature_obj.matrix_world.inverted() @ offset_vector
+
+        # Copiar la rotación del Empty al hueso
+        if target_obj and object_bone:
+            target_rotation = target_obj.matrix_world.to_quaternion()
+            object_bone.rotation_quaternion = target_rotation @ armature_obj.matrix_world.to_quaternion().inverted()
 
         # Aplicar la transformación al Object (puede ser un objeto o un bone)
         if object_obj:
@@ -60,8 +71,7 @@ class CopyTransformsOperator(bpy.types.Operator):
             object_obj.keyframe_insert(data_path="location")  # Agregar keyframe para la ubicación
             object_obj.keyframe_insert(data_path="rotation_euler")  # Agregar keyframe para la rotación
         elif object_bone:
-            # Convertir World Space a Pose Space y aplicar al bone
-            object_bone.matrix = pose_matrix  # Copia la transformación si es un bone
+            # Agregar keyframes para el hueso
             object_bone.keyframe_insert(data_path="location")  # Agregar keyframe para la ubicación
             object_bone.keyframe_insert(data_path="rotation_quaternion")  # Agregar keyframe para la rotación
 
@@ -73,110 +83,11 @@ class CopyTransformsOperator(bpy.types.Operator):
         self.report({'INFO'}, f"El Object '{object_name}' ahora copia la posición y rotación de '{target_name}' en World Space. Keyframes añadidos.")
         return {'FINISHED'}
 
-class LinkCopyTransformsOperator(bpy.types.Operator):
-    """Aplica un modificador Copy Transforms y establece keyframes"""
-    bl_idname = "object.link_copy_transforms"
-    bl_label = "Link Copy Transforms"
 
-    def execute(self, context):
-        target_name = context.scene.target_dropdown
-        object_name = context.scene.object_dropdown
-
-        # Verificar que los inputs no estén vacíos
-        if not target_name or not object_name:
-            self.report({'ERROR'}, "Target u Object no seleccionados.")
-            return {'CANCELLED'}
-
-        # Obtener el objeto seleccionado como Object
-        armature_obj = bpy.context.object  # Armature seleccionado
-        target_obj = bpy.data.objects.get(target_name)  # Buscar si Target es un objeto
-        object_obj = bpy.data.objects.get(object_name)  # Buscar si Object es un objeto
-
-        # Si el Target no es un objeto, buscarlo como bone dentro del Armature activo
-        if not target_obj and armature_obj and armature_obj.type == 'ARMATURE':
-            target_bone = armature_obj.pose.bones.get(target_name)
-        else:
-            target_bone = None
-
-        # Si el Object no es un objeto, buscarlo como bone dentro del Armature activo
-        if not object_obj and armature_obj and armature_obj.type == 'ARMATURE':
-            object_bone = armature_obj.pose.bones.get(object_name)
-        else:
-            object_bone = None
-
-        # Validaciones de existencia
-        if not (target_obj or target_bone):
-            self.report({'ERROR'}, f"El Target '{target_name}' no se encontró en la escena ni en el Armature activo.")
-            return {'CANCELLED'}
-        if not (object_obj or object_bone):
-            self.report({'ERROR'}, f"El Object '{object_name}' no se encontró en la escena ni en el Armature activo.")
-            return {'CANCELLED'}
-
-        # Crear el modificador Copy Transforms
-        if object_obj:
-            modifier = object_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
-        elif object_bone:
-            modifier = armature_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
-
-        # Configurar el modificador para apuntar al Target
-        if target_obj:
-            modifier.target = target_obj
-        elif target_bone:
-            modifier.target = armature_obj
-            modifier.subtarget = target_bone.name
-
-        # Establecer keyframes para la influencia
-        current_frame = bpy.context.scene.frame_current
-        modifier.influence = 1.0
-        modifier.keyframe_insert(data_path="influence", frame=current_frame)
-        modifier.influence = 0.0
-        modifier.keyframe_insert(data_path="influence", frame=current_frame - 1)
-
-        self.report({'INFO'}, f"Modificador Copy Transforms aplicado de {target_name} a {object_name}.")
-        return {'FINISHED'}
-
-class UnlinkCopyTransformsOperator(bpy.types.Operator):
-    """Desactiva el modificador Copy Transforms y establece keyframes"""
-    bl_idname = "object.unlink_copy_transforms"
-    bl_label = "Unlink Copy Transforms"
-
-    def execute(self, context):
-        object_name = context.scene.object_dropdown
-
-        # Verificar que el input no esté vacío
-        if not object_name:
-            self.report({'ERROR'}, "Object no seleccionado.")
-            return {'CANCELLED'}
-
-        # Obtener el objeto seleccionado como Object
-        object_obj = bpy.data.objects.get(object_name)
-        if not object_obj:
-            self.report({'ERROR'}, f"El Object '{object_name}' no se encontró en la escena.")
-            return {'CANCELLED'}
-
-        # Buscar el modificador Copy Transforms
-        modifier = next((mod for mod in object_obj.modifiers if mod.type == 'COPY_TRANSFORMS'), None)
-        if not modifier:
-            self.report({'ERROR'}, "No se encontró un modificador Copy Transforms.")
-            return {'CANCELLED'}
-
-        # Establecer keyframes para la influencia
-        current_frame = bpy.context.scene.frame_current
-        modifier.influence = 1.0
-        modifier.keyframe_insert(data_path="influence", frame=current_frame)
-        modifier.influence = 0.0
-        modifier.keyframe_insert(data_path="influence", frame=current_frame + 1)
-
-        self.report({'INFO'}, f"Modificador Copy Transforms desactivado en {object_name}.")
-        return {'FINISHED'}
 
 # Funciones de registro y desregistro
 def register():
     bpy.utils.register_class(CopyTransformsOperator)
-    bpy.utils.register_class(LinkCopyTransformsOperator)
-    bpy.utils.register_class(UnlinkCopyTransformsOperator)
 
 def unregister():
     bpy.utils.unregister_class(CopyTransformsOperator)
-    bpy.utils.unregister_class(LinkCopyTransformsOperator)
-    bpy.utils.unregister_class(UnlinkCopyTransformsOperator)

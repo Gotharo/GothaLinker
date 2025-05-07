@@ -15,7 +15,7 @@ bl_info = {
 # Aligner Tool
 from .Align_bone_empty import CopyTransformsOperator, update_list, register as align_register, unregister as align_unregister
 
-# Propiedades para los inputs
+# Registrar las propiedades para los inputs
 bpy.types.Scene.target_dropdown = bpy.props.EnumProperty(
     name="Target",
     description="Selecciona el Target",
@@ -689,6 +689,10 @@ def register():
 def unregister():
     # Desregistrar el operador de Align_bone_empty.py
     align_unregister()  # Desregistrar las clases del script Align_bone_empty.py
+
+    # Eliminar las propiedades
+    del bpy.types.Scene.target_dropdown
+    del bpy.types.Scene.object_dropdown
 
     bpy.utils.unregister_class(MIADDON_PT_Panel)
     bpy.utils.unregister_class(MIADDON_OT_Linker)

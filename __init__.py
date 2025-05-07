@@ -654,15 +654,15 @@ def register():
         bpy.utils.register_class(MIADDON_PT_Panel)
     except ValueError:
         print("MIADDON_PT_Panel ya está registrado.")
-
-    bpy.utils.register_class(MIADDON_PT_Panel)
+    
+    # Registrar otras clases
     bpy.utils.register_class(MIADDON_OT_Linker)
     bpy.utils.register_class(MIADDON_OT_Unlink)
     bpy.utils.register_class(MIADDON_OT_Clearshapes)
     bpy.utils.register_class(MIADDON_OT_Bake_ctrlstoshapes)
     bpy.utils.register_class(MIADDON_OT_Bake_Shapestoctrls)
     bpy.utils.register_class(MIADDON_OT_Keyshapes)
-    bpy.utils.register_class(OBJECT_OT_select_riggui)  # Nueva clase
+    bpy.utils.register_class(OBJECT_OT_select_riggui)
     bpy.utils.register_class(SeleccionarObjetosBrowsOperator)
     bpy.utils.register_class(SeleccionarObjetosMidHeadOperator)
     bpy.utils.register_class(SeleccionarObjetosMouthJawOperator)
@@ -681,8 +681,7 @@ def register():
     bpy.utils.register_class(ApplyPhonemeWOOOperator)
     bpy.utils.register_class(SeleccionarLeftHandBonesOperator)
     bpy.utils.register_class(SeleccionarRightHandBonesOperator)
-    bpy.utils.register_class(MIADDON_PT_Panel)
-
+    
 def unregister():
     bpy.utils.unregister_class(MIADDON_PT_Panel)
     bpy.utils.unregister_class(MIADDON_OT_Linker)
@@ -691,7 +690,7 @@ def unregister():
     bpy.utils.unregister_class(MIADDON_OT_Bake_ctrlstoshapes)
     bpy.utils.unregister_class(MIADDON_OT_Bake_Shapestoctrls)
     bpy.utils.unregister_class(MIADDON_OT_Keyshapes)
-    bpy.utils.unregister_class(OBJECT_OT_select_riggui)  # Nueva clase
+    bpy.utils.unregister_class(OBJECT_OT_select_riggui)
     bpy.utils.unregister_class(SeleccionarObjetosBrowsOperator)
     bpy.utils.unregister_class(SeleccionarObjetosMidHeadOperator)
     bpy.utils.unregister_class(SeleccionarObjetosMouthJawOperator)
@@ -708,8 +707,8 @@ def unregister():
     bpy.utils.unregister_class(ApplyPhonemeROperator)
     bpy.utils.unregister_class(ApplyPhonemeThOperator)
     bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
-    bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
     bpy.utils.unregister_class(SeleccionarLeftHandBonesOperator)
+    bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
     
 
     

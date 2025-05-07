@@ -28,10 +28,7 @@ bpy.types.Scene.object_dropdown = bpy.props.EnumProperty(
     items=update_list
 )
 
-
-
 # Libreria para BlendShapes
-
 from .Phon_config import phoneme_configs
 from .Phon_config import control_pairs
 from .Phon_config import objetos_brows
@@ -720,8 +717,6 @@ def unregister():
     bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
     bpy.utils.unregister_class(SeleccionarLeftHandBonesOperator)
     bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
-    
-
-    
+        
 if __name__ == "__main__":
     register()

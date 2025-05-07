@@ -70,9 +70,15 @@ class LinkCopyTransformsOperator(bpy.types.Operator):
         target_name = context.scene.target_dropdown
         object_name = context.scene.object_dropdown
 
+        # Verificar que los nombres no estén vacíos
+        if not target_name or not object_name:
+            self.report({'ERROR'}, "Target u Object no seleccionados.")
+            return {'CANCELLED'}
+
         target_obj = bpy.data.objects.get(target_name)
         object_obj = bpy.data.objects.get(object_name)
 
+        # Verificar que los objetos existan
         if not target_obj or not object_obj:
             self.report({'ERROR'}, "Target u Object no válidos.")
             return {'CANCELLED'}
@@ -98,8 +104,15 @@ class UnlinkCopyTransformsOperator(bpy.types.Operator):
 
     def execute(self, context):
         object_name = context.scene.object_dropdown
+
+        # Verificar que el nombre no esté vacío
+        if not object_name:
+            self.report({'ERROR'}, "Object no seleccionado.")
+            return {'CANCELLED'}
+
         object_obj = bpy.data.objects.get(object_name)
 
+        # Verificar que el objeto exista
         if not object_obj:
             self.report({'ERROR'}, "Object no válido.")
             return {'CANCELLED'}

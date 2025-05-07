@@ -17,8 +17,22 @@ from .Align_bone_empty import (
     LinkCopyTransformsOperator,
     UnlinkCopyTransformsOperator,
     update_list,
+    update_list_link_unlink,
     register as align_register,
     unregister as align_unregister
+)
+
+# Registrar las propiedades para los inputs
+bpy.types.Scene.target_dropdown = bpy.props.EnumProperty(
+    name="Target",
+    description="Selecciona el Target",
+    items=update_list_link_unlink  # Usar la nueva función
+)
+
+bpy.types.Scene.object_dropdown = bpy.props.EnumProperty(
+    name="Object",
+    description="Selecciona el Object",
+    items=update_list_link_unlink  # Usar la nueva función
 )
 
 # Registrar las propiedades para los inputs

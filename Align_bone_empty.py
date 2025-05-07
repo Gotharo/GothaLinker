@@ -70,22 +70,36 @@ class LinkCopyTransformsOperator(bpy.types.Operator):
         target_name = context.scene.target_dropdown
         object_name = context.scene.object_dropdown
 
-        # Verificar que los nombres no estén vacíos
+        # Verificar que los inputs no estén vacíos
         if not target_name or not object_name:
             self.report({'ERROR'}, "Target u Object no seleccionados.")
             return {'CANCELLED'}
 
-        target_obj = bpy.data.objects.get(target_name)
+        # Obtener el objeto seleccionado como Object
         object_obj = bpy.data.objects.get(object_name)
-
-        # Verificar que los objetos existan
-        if not target_obj or not object_obj:
-            self.report({'ERROR'}, "Target u Object no válidos.")
+        if not object_obj:
+            self.report({'ERROR'}, f"El Object '{object_name}' no se encontró en la escena.")
             return {'CANCELLED'}
 
-        # Crear el modificador Copy Transforms
-        modifier = object_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
-        modifier.target = target_obj
+        # Verificar si el Target es un objeto o un hueso dentro de un Armature
+        if "." in target_name:  # Caso en el que el Target es un hueso (nombre formato: "Armature.Bone")
+            armature_name, bone_name = target_name.split(".", 1)
+            target_obj = bpy.data.objects.get(armature_name)
+            if not target_obj or target_obj.type != 'ARMATURE':
+                self.report({'ERROR'}, f"El Armature '{armature_name}' no se encontró en la escena.")
+                return {'CANCELLED'}
+            # Configurar el modificador para apuntar al Armature y al hueso
+            modifier = object_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
+            modifier.target = target_obj
+            modifier.subtarget = bone_name
+        else:  # Caso en el que el Target es un objeto
+            target_obj = bpy.data.objects.get(target_name)
+            if not target_obj:
+                self.report({'ERROR'}, f"El Target '{target_name}' no se encontró en la escena.")
+                return {'CANCELLED'}
+            # Configurar el modificador para apuntar al objeto
+            modifier = object_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
+            modifier.target = target_obj
 
         # Establecer keyframes para la influencia
         current_frame = bpy.context.scene.frame_current
@@ -105,16 +119,15 @@ class UnlinkCopyTransformsOperator(bpy.types.Operator):
     def execute(self, context):
         object_name = context.scene.object_dropdown
 
-        # Verificar que el nombre no esté vacío
+        # Verificar que el input no esté vacío
         if not object_name:
             self.report({'ERROR'}, "Object no seleccionado.")
             return {'CANCELLED'}
 
+        # Obtener el objeto seleccionado como Object
         object_obj = bpy.data.objects.get(object_name)
-
-        # Verificar que el objeto exista
         if not object_obj:
-            self.report({'ERROR'}, "Object no válido.")
+            self.report({'ERROR'}, f"El Object '{object_name}' no se encontró en la escena.")
             return {'CANCELLED'}
 
         # Buscar el modificador Copy Transforms
@@ -130,11 +143,20 @@ class UnlinkCopyTransformsOperator(bpy.types.Operator):
         modifier.influence = 0.0
         modifier.keyframe_insert(data_path="influence", frame=current_frame + 1)
 
-        # Eliminar el modificador
-        object_obj.modifiers.remove(modifier)
-
-        self.report({'INFO'}, f"Modificador Copy Transforms eliminado de {object_name}.")
+        self.report({'INFO'}, f"Modificador Copy Transforms desactivado en {object_name}.")
         return {'FINISHED'}
+
+def update_list_link_unlink(self, context):
+    """Genera una lista de objetos y huesos válidos para los inputs Target y Object"""
+    items = [(obj.name, obj.name, "") for obj in bpy.data.objects if obj.type in {'MESH', 'EMPTY', 'ARMATURE'}]
+
+    # Agregar huesos de Armatures
+    for obj in bpy.data.objects:
+        if obj.type == 'ARMATURE':
+            for bone in obj.pose.bones:
+                items.append((f"{obj.name}.{bone.name}", f"{obj.name}.{bone.name}", ""))
+
+    return items
 
 def update_list(self, context):
     """Filtrar objetos Empty y bones con 'ik' en su nombre"""

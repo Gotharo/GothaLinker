@@ -676,7 +676,6 @@ def register():
     bpy.utils.register_class(ApplyPhonemeWOOOperator)
     bpy.utils.register_class(SeleccionarLeftHandBonesOperator)
     bpy.utils.register_class(SeleccionarRightHandBonesOperator)
-    align_register()  
     bpy.utils.register_class(MIADDON_PT_Panel)
 
 def unregister():
@@ -705,9 +704,8 @@ def unregister():
     bpy.utils.unregister_class(ApplyPhonemeWOOOperator)
     bpy.utils.unregister_class(SeleccionarRightHandBonesOperator)
     bpy.utils.unregister_class(SeleccionarLeftHandBonesOperator)
-
-    align_unregister()  
     bpy.utils.unregister_class(MIADDON_PT_Panel)
+
     
 if __name__ == "__main__":
     register()

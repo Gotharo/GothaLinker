@@ -12,6 +12,17 @@ def update_list_link_unlink(self, context):
 
     return items
 
+def update_list(self, context):
+    """Filtrar objetos Empty y bones con 'ik' en su nombre"""
+    filtered_objects = [(obj.name, obj.name, "") for obj in bpy.data.objects if obj.type == 'EMPTY']
+    
+    armature_obj = bpy.context.object
+    if armature_obj and armature_obj.type == 'ARMATURE':
+        filtered_bones = [(bone.name, bone.name, "") for bone in armature_obj.pose.bones if "ik" in bone.name.lower()]
+        filtered_objects.extend(filtered_bones)
+
+    return filtered_objects
+
 class CopyTransformsOperator(bpy.types.Operator):
     """Operador para aplicar la transformación"""
     bl_idname = "object.copy_transforms"

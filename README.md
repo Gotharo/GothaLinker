@@ -1,3 +1,8 @@
+Version 2.4
+<br>
+-se agregan funcionalidad para alinear huesos IK a emptys y vice versa
+
+
 Version 2.3
 <br>
 -se agregan set selector para dedos ambas manos

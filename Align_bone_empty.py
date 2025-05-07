@@ -99,30 +99,42 @@ class LinkCopyTransformsOperator(bpy.types.Operator):
             return {'CANCELLED'}
 
         # Obtener el objeto seleccionado como Object
-        object_obj = bpy.data.objects.get(object_name)
-        if not object_obj:
-            self.report({'ERROR'}, f"El Object '{object_name}' no se encontró en la escena.")
+        armature_obj = bpy.context.object  # Armature seleccionado
+        target_obj = bpy.data.objects.get(target_name)  # Buscar si Target es un objeto
+        object_obj = bpy.data.objects.get(object_name)  # Buscar si Object es un objeto
+
+        # Si el Target no es un objeto, buscarlo como bone dentro del Armature activo
+        if not target_obj and armature_obj and armature_obj.type == 'ARMATURE':
+            target_bone = armature_obj.pose.bones.get(target_name)
+        else:
+            target_bone = None
+
+        # Si el Object no es un objeto, buscarlo como bone dentro del Armature activo
+        if not object_obj and armature_obj and armature_obj.type == 'ARMATURE':
+            object_bone = armature_obj.pose.bones.get(object_name)
+        else:
+            object_bone = None
+
+        # Validaciones de existencia
+        if not (target_obj or target_bone):
+            self.report({'ERROR'}, f"El Target '{target_name}' no se encontró en la escena ni en el Armature activo.")
+            return {'CANCELLED'}
+        if not (object_obj or object_bone):
+            self.report({'ERROR'}, f"El Object '{object_name}' no se encontró en la escena ni en el Armature activo.")
             return {'CANCELLED'}
 
-        # Verificar si el Target es un hueso dentro de un Armature
-        if "." in target_name:  # Caso en el que el Target es un hueso (nombre formato: "Armature.Bone")
-            armature_name, bone_name = target_name.split(".", 1)
-            target_obj = bpy.data.objects.get(armature_name)
-            if not target_obj or target_obj.type != 'ARMATURE':
-                self.report({'ERROR'}, f"El Armature '{armature_name}' no se encontró en la escena.")
-                return {'CANCELLED'}
-            # Configurar el modificador para apuntar al Armature y al hueso
+        # Crear el modificador Copy Transforms
+        if object_obj:
             modifier = object_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
+        elif object_bone:
+            modifier = armature_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
+
+        # Configurar el modificador para apuntar al Target
+        if target_obj:
             modifier.target = target_obj
-            modifier.subtarget = bone_name
-        else:  # Caso en el que el Target es un objeto
-            target_obj = bpy.data.objects.get(target_name)
-            if not target_obj:
-                self.report({'ERROR'}, f"El Target '{target_name}' no se encontró en la escena.")
-                return {'CANCELLED'}
-            # Configurar el modificador para apuntar al objeto
-            modifier = object_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
-            modifier.target = target_obj
+        elif target_bone:
+            modifier.target = armature_obj
+            modifier.subtarget = target_bone.name
 
         # Establecer keyframes para la influencia
         current_frame = bpy.context.scene.frame_current

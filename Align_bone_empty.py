@@ -1,5 +1,17 @@
 import bpy
 
+def update_list_link_unlink(self, context):
+    """Genera una lista de objetos y huesos válidos para los inputs Target y Object"""
+    items = [(obj.name, obj.name, "") for obj in bpy.data.objects if obj.type in {'MESH', 'EMPTY', 'ARMATURE'}]
+
+    # Agregar huesos de Armatures
+    for obj in bpy.data.objects:
+        if obj.type == 'ARMATURE':
+            for bone in obj.pose.bones:
+                items.append((f"{obj.name}.{bone.name}", f"{obj.name}.{bone.name}", ""))
+
+    return items
+
 class CopyTransformsOperator(bpy.types.Operator):
     """Operador para aplicar la transformación"""
     bl_idname = "object.copy_transforms"
@@ -81,7 +93,7 @@ class LinkCopyTransformsOperator(bpy.types.Operator):
             self.report({'ERROR'}, f"El Object '{object_name}' no se encontró en la escena.")
             return {'CANCELLED'}
 
-        # Verificar si el Target es un objeto o un hueso dentro de un Armature
+        # Verificar si el Target es un hueso dentro de un Armature
         if "." in target_name:  # Caso en el que el Target es un hueso (nombre formato: "Armature.Bone")
             armature_name, bone_name = target_name.split(".", 1)
             target_obj = bpy.data.objects.get(armature_name)
@@ -145,31 +157,6 @@ class UnlinkCopyTransformsOperator(bpy.types.Operator):
 
         self.report({'INFO'}, f"Modificador Copy Transforms desactivado en {object_name}.")
         return {'FINISHED'}
-
-def update_list_link_unlink(self, context):
-    """Genera una lista de objetos y huesos válidos para los inputs Target y Object"""
-    items = [(obj.name, obj.name, "") for obj in bpy.data.objects if obj.type in {'MESH', 'EMPTY', 'ARMATURE'}]
-
-    # Agregar huesos de Armatures
-    for obj in bpy.data.objects:
-        if obj.type == 'ARMATURE':
-            for bone in obj.pose.bones:
-                items.append((f"{obj.name}.{bone.name}", f"{obj.name}.{bone.name}", ""))
-
-    return items
-
-def update_list(self, context):
-    """Filtrar objetos Empty y bones con 'ik' en su nombre"""
-    filtered_objects = [(obj.name, obj.name, "") for obj in bpy.data.objects if obj.type == 'EMPTY']
-    
-    armature_obj = bpy.context.object
-    if armature_obj and armature_obj.type == 'ARMATURE':
-        filtered_bones = [(bone.name, bone.name, "") for bone in armature_obj.pose.bones if "ik" in bone.name.lower()]
-        filtered_objects.extend(filtered_bones)
-
-    return filtered_objects
-
-
 
 # Funciones de registro y desregistro
 def register():

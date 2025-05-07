@@ -65,6 +65,21 @@ class CopyTransformsOperator(bpy.types.Operator):
             target_rotation = target_obj.matrix_world.to_quaternion()
             object_bone.rotation_quaternion = target_rotation @ armature_obj.matrix_world.to_quaternion().inverted()
 
+        # Si el hueso tiene un padre, convertir sus coordenadas de Pose Space a World Space
+        if object_bone and object_bone.parent:
+            # Obtener la matriz acumulada de los padres
+            parent_matrix = object_bone.parent.matrix
+            while object_bone.parent:
+                parent_matrix = object_bone.parent.matrix @ parent_matrix
+                object_bone = object_bone.parent
+
+            # Convertir Pose Space a World Space
+            world_matrix = armature_obj.matrix_world @ parent_matrix
+            pose_matrix = armature_obj.matrix_world.inverted() @ world_matrix
+
+            # Aplicar la transformación al hueso
+            object_bone.matrix = pose_matrix
+
         # Aplicar la transformación al Object (puede ser un objeto o un bone)
         if object_obj:
             object_obj.matrix_world = world_matrix  # Copia directa si es un objeto

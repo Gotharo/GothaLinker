@@ -639,17 +639,21 @@ class MIADDON_PT_Panel(bpy.types.Panel):
         row.operator("object.apply_phoneme_r", text="R")
         row.operator("object.apply_phoneme_th", text="Th")
 
-        row = layout.row()
-        row.operator("object.apply_phoneme_woo", text="WOO")
-
+        # Sección para Aligner Tool
         row = layout.row()
         row.label(text="Aligner Tool", icon='GROUP_VCOL')
+
         row = layout.row()
-        row.prop(context.scene, "Target")  # Input para seleccionar el Target
-        row.prop(context.scene, "Object")  # Input para seleccionar el Object
-        row.operator("Copy Loc-Rot")  # Botón para copiar transformaciones
+        row.prop(context.scene, "target_dropdown")  # Input para seleccionar el Target
+        row.prop(context.scene, "object_dropdown")  # Input para seleccionar el Object
+
+        row = layout.row()
+        row.operator("object.copy_transforms", text="Copy Loc-Rot")  # Botón para ejecutar la funcionalidad
 
 def register():
+    # Registrar el operador de Align_bone_empty.py
+    align_register()  # Registrar las clases del script Align_bone_empty.py
+    
     try:
         bpy.utils.register_class(MIADDON_PT_Panel)
     except ValueError:
@@ -681,8 +685,11 @@ def register():
     bpy.utils.register_class(ApplyPhonemeWOOOperator)
     bpy.utils.register_class(SeleccionarLeftHandBonesOperator)
     bpy.utils.register_class(SeleccionarRightHandBonesOperator)
-    
+
 def unregister():
+    # Desregistrar el operador de Align_bone_empty.py
+    align_unregister()  # Desregistrar las clases del script Align_bone_empty.py
+
     bpy.utils.unregister_class(MIADDON_PT_Panel)
     bpy.utils.unregister_class(MIADDON_OT_Linker)
     bpy.utils.unregister_class(MIADDON_OT_Unlink)

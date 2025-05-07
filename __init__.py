@@ -12,8 +12,14 @@ bl_info = {
     "category": "Object",
 }
 
-# Aligner Tool
-from .Align_bone_empty import CopyTransformsOperator, update_list, register as align_register, unregister as align_unregister
+from .Align_bone_empty import (
+    CopyTransformsOperator,
+    LinkCopyTransformsOperator,
+    UnlinkCopyTransformsOperator,
+    update_list,
+    register as align_register,
+    unregister as align_unregister
+)
 
 # Registrar las propiedades para los inputs
 bpy.types.Scene.target_dropdown = bpy.props.EnumProperty(
@@ -27,8 +33,6 @@ bpy.types.Scene.object_dropdown = bpy.props.EnumProperty(
     description="Selecciona el Object",
     items=update_list
 )
-
-
 
 # Libreria para BlendShapes
 
@@ -649,6 +653,11 @@ class MIADDON_PT_Panel(bpy.types.Panel):
 
         row = layout.row()
         row.operator("object.copy_transforms", text="Copy Loc-Rot")  # Botón para ejecutar la funcionalidad
+
+        # Botones para Link y Unlink
+        row = layout.row()
+        row.operator("object.link_copy_transforms", text="Link")
+        row.operator("object.unlink_copy_transforms", text="Unlink")
 
 def register():
     # Registrar el operador de Align_bone_empty.py

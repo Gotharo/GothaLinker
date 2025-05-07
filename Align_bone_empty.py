@@ -61,6 +61,68 @@ class CopyTransformsOperator(bpy.types.Operator):
         self.report({'INFO'}, f"El Object '{object_name}' ahora copia la posición y rotación de '{target_name}' en World Space. Keyframes añadidos.")
         return {'FINISHED'}
 
+class LinkCopyTransformsOperator(bpy.types.Operator):
+    """Aplica un modificador Copy Transforms y establece keyframes"""
+    bl_idname = "object.link_copy_transforms"
+    bl_label = "Link Copy Transforms"
+
+    def execute(self, context):
+        target_name = context.scene.target_dropdown
+        object_name = context.scene.object_dropdown
+
+        target_obj = bpy.data.objects.get(target_name)
+        object_obj = bpy.data.objects.get(object_name)
+
+        if not target_obj or not object_obj:
+            self.report({'ERROR'}, "Target u Object no válidos.")
+            return {'CANCELLED'}
+
+        # Crear el modificador Copy Transforms
+        modifier = object_obj.modifiers.new(name="Copy Transforms", type='COPY_TRANSFORMS')
+        modifier.target = target_obj
+
+        # Establecer keyframes para la influencia
+        current_frame = bpy.context.scene.frame_current
+        modifier.influence = 1.0
+        modifier.keyframe_insert(data_path="influence", frame=current_frame)
+        modifier.influence = 0.0
+        modifier.keyframe_insert(data_path="influence", frame=current_frame - 1)
+
+        self.report({'INFO'}, f"Modificador Copy Transforms aplicado de {target_name} a {object_name}.")
+        return {'FINISHED'}
+
+class UnlinkCopyTransformsOperator(bpy.types.Operator):
+    """Desactiva el modificador Copy Transforms y establece keyframes"""
+    bl_idname = "object.unlink_copy_transforms"
+    bl_label = "Unlink Copy Transforms"
+
+    def execute(self, context):
+        object_name = context.scene.object_dropdown
+        object_obj = bpy.data.objects.get(object_name)
+
+        if not object_obj:
+            self.report({'ERROR'}, "Object no válido.")
+            return {'CANCELLED'}
+
+        # Buscar el modificador Copy Transforms
+        modifier = next((mod for mod in object_obj.modifiers if mod.type == 'COPY_TRANSFORMS'), None)
+        if not modifier:
+            self.report({'ERROR'}, "No se encontró un modificador Copy Transforms.")
+            return {'CANCELLED'}
+
+        # Establecer keyframes para la influencia
+        current_frame = bpy.context.scene.frame_current
+        modifier.influence = 1.0
+        modifier.keyframe_insert(data_path="influence", frame=current_frame)
+        modifier.influence = 0.0
+        modifier.keyframe_insert(data_path="influence", frame=current_frame + 1)
+
+        # Eliminar el modificador
+        object_obj.modifiers.remove(modifier)
+
+        self.report({'INFO'}, f"Modificador Copy Transforms eliminado de {object_name}.")
+        return {'FINISHED'}
+
 def update_list(self, context):
     """Filtrar objetos Empty y bones con 'ik' en su nombre"""
     filtered_objects = [(obj.name, obj.name, "") for obj in bpy.data.objects if obj.type == 'EMPTY']
@@ -72,9 +134,15 @@ def update_list(self, context):
 
     return filtered_objects
 
+
+
 # Funciones de registro y desregistro
 def register():
     bpy.utils.register_class(CopyTransformsOperator)
+    bpy.utils.register_class(LinkCopyTransformsOperator)
+    bpy.utils.register_class(UnlinkCopyTransformsOperator)
 
 def unregister():
     bpy.utils.unregister_class(CopyTransformsOperator)
+    bpy.utils.unregister_class(LinkCopyTransformsOperator)
+    bpy.utils.unregister_class(UnlinkCopyTransformsOperator)

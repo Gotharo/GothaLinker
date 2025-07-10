@@ -513,7 +513,7 @@ class MIADDON_OT_Bake_Shapestoctrls(bpy.types.Operator):
     bl_label = "Ejecutar Bake_Shapestoctrls"
 
     def execute(self, context):
-        Bake_Shapestoctrls()
+        bake_shapes_to_controls()
         return {'FINISHED'}
     
 class MIADDON_OT_Keyshapes(bpy.types.Operator):

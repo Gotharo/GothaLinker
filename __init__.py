@@ -242,57 +242,69 @@ def Bake_ctrlstoshapes():
                         print(f"Animación copiada de '{controller_name}' a Shape Key '{shape_key_name}' en el eje {axis} ({'Negativo' if direction == -1 else 'Positivo'})")
             print("Todas las animaciones han sido copiadas correctamente a los Shape Keys.")
 
-def Bake_Shapestoctrls():
-    print("Ejecutando Bake_Shapestoctrls")
-    selected_obj = bpy.context.object
-    if not selected_obj or not selected_obj.data.shape_keys:
-        print("Error: No hay un objeto seleccionado o no tiene Shape Keys.")
-    else:
-        shape_keys = selected_obj.data.shape_keys
-        if not shape_keys.animation_data or not shape_keys.animation_data.action:
-            print("Error: No hay animaciones en los Shape Keys.")
-        else:
-            shape_key_action = shape_keys.animation_data.action
-            riggui_collection = bpy.data.collections.get("RIGGUI")
-            if not riggui_collection:
-                print("Error: La colección 'RIGGUI' no existe en la escena.")
+def bake_shapes_to_controls():
+    print("🛠️ Ejecutando bake_shapes_to_controls")
+
+    obj = bpy.context.object
+    if not obj or not obj.data.shape_keys:
+        print("❌ Error: Selecciona un objeto con Shape Keys.")
+        return
+
+    shape_keys = obj.data.shape_keys
+    action = shape_keys.animation_data.action if shape_keys.animation_data else None
+    if not action:
+        print("❌ Error: Los Shape Keys no tienen animación.")
+        return
+
+    rig_collection = bpy.data.collections.get("RIGGUI")
+    if not rig_collection:
+        print("❌ Error: La colección 'RIGGUI' no está en la escena.")
+        return
+
+    controller_curves = {}
+
+    for shape_name, (ctrl_name, (axis, direction)) in control_pairs.items():
+        key_block = shape_keys.key_blocks.get(shape_name)
+        ctrl_obj = rig_collection.objects.get(ctrl_name)
+        if not key_block or not ctrl_obj:
+            continue
+
+        fcurve = action.fcurves.find(f'key_blocks["{shape_name}"].value')
+        if not fcurve:
+            continue
+
+        axis_index = {"X": 0, "Y": 1, "Z": 2}.get(axis, 0)
+        if not ctrl_obj.animation_data:
+            ctrl_obj.animation_data_create()
+
+        if not ctrl_obj.animation_data.action:
+            ctrl_obj.animation_data.action = bpy.data.actions.new(name=f"{ctrl_name}_Action")
+
+        ctrl_action = ctrl_obj.animation_data.action
+        data_path = f"location[{axis_index}]"
+
+        ctrl_fcurve = controller_curves.setdefault(ctrl_name, {}).get(data_path)
+        if not ctrl_fcurve:
+            ctrl_fcurve = ctrl_action.fcurves.find(data_path)
+            if not ctrl_fcurve:
+                ctrl_fcurve = ctrl_action.fcurves.new(data_path="location", index=axis_index)
+            ctrl_fcurve.keyframe_points.clear()
+            controller_curves[ctrl_name][data_path] = ctrl_fcurve
+
+        for kp in fcurve.keyframe_points:
+            frame, value = kp.co
+            new_value = max(-1.0, min(1.0, value * direction))
+
+            existing = next((p for p in ctrl_fcurve.keyframe_points if p.co.x == frame), None)
+            if existing:
+                existing.co.y = new_value
             else:
-                controller_curves = {}
-                for shape_key_name, (controller_name, (axis, direction)) in control_pairs.items():
-                    shape_key = shape_keys.key_blocks.get(shape_key_name)
-                    controller_obj = riggui_collection.objects.get(controller_name)
-                    if shape_key and controller_obj:
-                        fcurve = shape_key_action.fcurves.find(f'key_blocks["{shape_key.name}"].value')
-                        if fcurve:
-                            axis_index = 0 if axis == "X" else 1
-                            if not controller_obj.animation_data:
-                                controller_obj.animation_data_create()
-                            if not controller_obj.animation_data.action:
-                                controller_obj.animation_data.action = bpy.data.actions.new(name=f"{controller_name}_Action")
-                            controller_action = controller_obj.animation_data.action
-                            path = f'location[{axis_index}]'
-                            if controller_name not in controller_curves:
-                                controller_curves[controller_name] = {}
-                            if path not in controller_curves[controller_name]:
-                                ctrl_fcurve = controller_action.fcurves.find(path)
-                                if not ctrl_fcurve:
-                                    ctrl_fcurve = controller_action.fcurves.new(data_path="location", index=axis_index)
-                                ctrl_fcurve.keyframe_points.clear()
-                                controller_curves[controller_name][path] = ctrl_fcurve
-                            else:
-                                ctrl_fcurve = controller_curves[controller_name][path]
-                            for kp in fcurve.keyframe_points:
-                                frame, value = kp.co
-                                new_value = max(-1, min(1, value if direction > 0 else -value))
-                                existing_kp = next((p for p in ctrl_fcurve.keyframe_points if p.co.x == frame), None)
-                                if existing_kp:
-                                    # Se reemplaza el valor existente sin sumarlo
-                                    existing_kp.co.y = new_value
-                                else:
-                                    ctrl_fcurve.keyframe_points.insert(frame, new_value)
-                            print(f"Animación copiada de Shape Key '{shape_key_name}' a '{controller_name}' en el eje {axis} ({'Negativo' if direction == -1 else 'Positivo'})")
-                print("Todas las animaciones han sido copiadas correctamente a los controladores.")
-               
+                ctrl_fcurve.keyframe_points.insert(frame, new_value, options={'FAST'})
+
+        print(f"✅ Shape Key '{shape_name}' copiada a '{ctrl_name}' en eje {axis} ({'Negativo' if direction < 0 else 'Positivo'})")
+
+    print("🎉 Animaciones copiadas exitosamente.")
+
 def Keyshapes():
     print("Ejecutando Keyshapes")
     selected_obj = bpy.context.object
